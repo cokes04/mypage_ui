@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MyNovel = () => {
+const MyNovelPage = () => {
 
     return (
         <div>
@@ -8,4 +8,4 @@ const MyNovel = () => {
     );
 }
 
-export default MyNovel;
+export default MyNovelPage;

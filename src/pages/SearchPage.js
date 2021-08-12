@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import NovelInfo from '../components/NovelInfo';
+import NovelPageButtons from '../components/NovelPageButtons';
 import SearchMenu from '../components/SearchMenu';
 import { searchNovel } from '../utils/Api';
 
-const Search = ({keyword, ...props}) => {
+const SearchPage = ({keyword, ...props}) => {
     
     const [pageInfo, setPageInfo] = useState({  page : 0,
                                                 size : 20,
@@ -28,13 +29,22 @@ const Search = ({keyword, ...props}) => {
     }, [keyword, pageInfo]);
 
 
-    const printNovelInfo = () => {
+    const printNovelInfos = () => {
+        if(totalNovelCount === 0)
+            return notExistMessage();
+        else
+            return novelInfos();
+    };
+
+    const notExistMessage = () => {
+        return <p>등록된 작품이 없습니다.</p>
+    };
+
+    const novelInfos = () => {
         return novelList.map( (novel, index) =>
              <NovelInfo key = {novel.id} 
                     num = {index + 1} 
-                    id = {novel.id}
-                    title = {novel.title} 
-                    author = {novel.author} 
+                    novel ={novel}
                     />
         );
     }
@@ -42,9 +52,12 @@ const Search = ({keyword, ...props}) => {
     return (
             <div>
                 <SearchMenu />
-                {printNovelInfo()}
+                <div>
+                    {printNovelInfos()}
+                </div>
+                <NovelPageButtons currentPage = {pageInfo.page} totalNovelPage = {totalNovelPage} setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
             </div>
             );
 }
 
-export default Search;
+export default SearchPage;

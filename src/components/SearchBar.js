@@ -1,6 +1,7 @@
 import React, {useEffect, useState }  from 'react';
 import { Redirect } from 'react-router-dom';
-import '../css/components/BooksMenu.css'
+import style from '../css/components/SearchBar.module.css'
+import SearchBtnImg from "../img/search_btn.png"
 
 const SearchBar = () => {
     const [keyword, setKeyword] = useState('');
@@ -12,7 +13,8 @@ const SearchBar = () => {
     }
 
     const search = () =>{
-        setIsRedirect(true);
+        if(keyword !== '')
+            setIsRedirect(true);
     };
 
     const redirect = () => {
@@ -20,7 +22,6 @@ const SearchBar = () => {
             return <Redirect to = {{
                 pathname : '/search',
                 search : '?keyword=' + keyword,
-                state : {keyword : keyword}
             }} />
         }
     }
@@ -32,9 +33,20 @@ const SearchBar = () => {
         }, [isRedirect]);
 
     return (
-        <div>
-            <input type = "type" placeholder="검색" value={keyword} onChange={e => setKeyword(e.target.value)} onKeyPress={e => enterPressEvent(e)}/>
-            <button type='submit' onClick={search}>검색</button>
+        <div className={style['search-bar']}>
+            <input className={style['search-bar__box']}
+                type = "text" 
+                placeholder="검색" 
+                value={keyword} 
+                onChange={e => setKeyword(e.target.value)} 
+                onKeyPress={e => enterPressEvent(e)}/>
+
+            <div className={style['search-bar__btn']}
+                onClick={search} >
+                <img className={style['search-bar__btn__img']}
+                    src={SearchBtnImg}
+                    alt='search_btn'/>
+            </div>
             {redirect()}
         </div>
         )

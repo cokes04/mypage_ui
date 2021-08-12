@@ -1,0 +1,21 @@
+.novel-type-menu {
+    height: 50px;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 5px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.novel-type-menu__item{
+    list-style: none;
+    padding-right: 100px;
+}
+
+.novel-type-menu__item > a{
+    font-size: 20px;
+    font-weight: 550;
+    color: #464646;
+    text-decoration: none;
+}   

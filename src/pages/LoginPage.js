@@ -4,7 +4,7 @@ import { login, setToken } from '../utils/Api';
 import LoginForm from '../components/LoginForm';
 import SocialLogin from '../components/SocialLogin';
 
-const Login = ( { authenticate } ) => {
+const LoginPage = ( { authenticate } ) => {
     const history = useHistory();
     
     const tryLogin = (user) => {
@@ -17,11 +17,10 @@ const Login = ( { authenticate } ) => {
     };
 
     const loginSuccess = (response) => {
-        console.log(response);
         const { accessToken } = response.data;
         setToken(accessToken);
         authenticate();
-        history.push('/signup'); 
+        history.push('/'); 
     };
 
     const loginFailure = (error) => {
@@ -32,8 +31,8 @@ const Login = ( { authenticate } ) => {
     return (
         <div> 
             <button onClick={ () => login({
-                                            "email" : "aaaa123@ggg.com",
-                                            "password" : "aaa"
+                                            email : "aaaa123@ggg.com",
+                                            password : "aaa"
                                         })}>
                                             임시로그인</button>
             <LoginForm login = {tryLogin} />
@@ -43,4 +42,4 @@ const Login = ( { authenticate } ) => {
     );
 }
 
-export default Login;
+export default LoginPage;

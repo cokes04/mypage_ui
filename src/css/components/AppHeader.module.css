@@ -1,0 +1,51 @@
+.header{
+    height: 80px;
+    width: 70%;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 10px;
+    display: flex;
+}
+
+.title{
+    margin-top: 10px;
+    display: flex;
+}
+
+.title__img{    
+    margin: 0;
+    
+    height: 70px;
+    width: 200px;
+    
+    cursor : pointer;
+}
+
+.auth-box{
+    margin-top: 20px;
+    padding-left: 15px;
+}
+
+.auth-box__item{
+    padding: 4px;
+    color: #3c3c3c;
+}
+
+.account-box{
+    margin-top: 25px;
+    padding-left: 20px;
+}
+
+.account-box__profile{
+    cursor: pointer;
+}
+
+.account-box__profile__img{
+    height: 40px;
+    width: 40px;
+}
+
+.auth-box > a{
+    text-decoration: none;
+}

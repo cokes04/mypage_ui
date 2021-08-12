@@ -40,7 +40,7 @@ export function logout(data){
     );
 }
 
-export function getNovelToId(novel_id){
+export function getNovelFromId(novel_id){
     return axios.get(
         '/api/novel/' + novel_id
     );
@@ -64,7 +64,7 @@ export function getNovelList(novelInfo, pageInfo){
 }
 
 export function searchNovel(keyword, pageInfo){
-    return axios.get('/novel/searsh/' + keyword, 
+    return axios.get('/api/novel/search/' + keyword, 
         {
             params : {
                 page : pageInfo.page,

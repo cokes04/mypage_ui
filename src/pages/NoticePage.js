@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const Notice = () => {
+const NoticePage = () => {
     useEffect( () => {/*공지가져와서 저장*/} );
     return (
         <div>
@@ -35,4 +35,4 @@ const Notice = () => {
     );
 }
 
-export default Notice;
+export default NoticePage;

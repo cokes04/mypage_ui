@@ -2,7 +2,7 @@ import React from "react";
 import SignUpForm from "../components/SignUpForm";
 import { signUp } from "../utils/Api";
 
-const EmailSignUp = () => {
+const EmailSignUpPage = () => {
 
     const trySignup = (user) => {
         signUp(user)
@@ -28,4 +28,4 @@ const EmailSignUp = () => {
 
 }
 
-export default EmailSignUp;
+export default EmailSignUpPage;

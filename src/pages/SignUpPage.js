@@ -2,7 +2,7 @@ import {React} from 'react';
 import SocialLogin from '../components/SocialLogin';
 import { Link } from 'react-router-dom';
 
-const SignUp = () => {
+const SignUpPage = () => {
     
     return (
         <div>
@@ -12,4 +12,4 @@ const SignUp = () => {
     );
 }
 
-export default SignUp;
+export default SignUpPage;

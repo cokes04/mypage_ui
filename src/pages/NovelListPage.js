@@ -5,7 +5,7 @@ import NovelTypeMenu from '../components/NovelTypeMenu';
 import NovelPageButtons from '../components/NovelPageButtons';
 import { getNovelList } from '../utils/Api';
 
-const NovelList = ( {free, type, genre, ...props} ) => {
+const NovelListPage = ( {free, type, genre, ...props} ) => {
 
     const [novelInfo, setNovelInfo] = useState({    free : free,
                                                     type : type,
@@ -54,19 +54,28 @@ const NovelList = ( {free, type, genre, ...props} ) => {
         }
     , [novelInfo, pageInfo] );
 
+    const printNovelInfos = () => {
+        if(totalNovelCount === 0)
+            return notExistMessage();
+        else
+            return novelInfos();
+    };
 
-    const printNovelInfo = () => {
+    const notExistMessage = () => {
+        return <p>등록된 작품이 없습니다.</p>
+    };
+
+    const novelInfos = () => {
         return novelList.map( (novel, index) =>
              <NovelInfo key = {novel.id} 
                     num = {index + 1} 
-                    id = {novel.id}
-                    title = {novel.title} 
-                    author = {novel.author} 
+                    novel = {novel}
                     />
         );
     }
 
-    const getUrl = () => { return props['match']['url'].split('/'); }
+    const getUrl = () => { return props.match.url.split('/'); }
+    
     const url1 = () => {
         const urls = getUrl();
         return  '/' + urls[1];
@@ -82,7 +91,7 @@ const NovelList = ( {free, type, genre, ...props} ) => {
             <NovelTypeMenu url = {url1()} />
             <NovelGenreMenu url = {url2()} />
             <div>
-                {printNovelInfo()}
+                {printNovelInfos()}
             </div>
                 <NovelPageButtons currentPage = {pageInfo.page} totalNovelPage = {totalNovelPage} setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
 
@@ -90,4 +99,4 @@ const NovelList = ( {free, type, genre, ...props} ) => {
     );
 }
 
-export default NovelList;
+export default NovelListPage;

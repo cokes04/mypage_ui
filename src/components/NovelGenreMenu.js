@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../css/components/CategoryMenu.css'
+import style from '../css/components/NovelGenreMenu.module.css'
 
 const NovelGenreMenu = ({url}) => {
     const menuList = [
@@ -20,16 +20,16 @@ const NovelGenreMenu = ({url}) => {
                     ]
 
     const menuItems = menuList.map( (menu) => 
-        <li key = {menu.name} className='category-menu-item'>
+        <li key = {menu.name} className={style['novel-genre-menu__item']}>
             <Link to = {url + menu.to} > 
-                <span>{menu.name}</span>
+                {menu.name}
             </Link>
         </li>        
     );
             
     return (
             <div>
-                <ul className = "category-menu">
+                <ul className = {style['novel-genre-menu']}>
                     {menuItems}
                 </ul>
             </div>

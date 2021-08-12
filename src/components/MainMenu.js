@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../css/components/MainMenu.css';
+import style from '../css/components/MainMenu.module.css';
 
 const MainMenu = ( ) => {
 
@@ -34,17 +34,18 @@ const MainMenu = ( ) => {
     ]
 
     const menuItems = menuList.map( (menu) => 
-                                            <li key = {menu.name} className='main-menu-item'>
+                                            <li className={style['main-menu__item']}
+                                                key = {menu.name} >
                                                 <Link to = {menu.to} > 
-                                                   <span>{menu.name}</span>
+                                                   {menu.name}
                                                 </Link>
                                             </li>        
                                         );
 
     return (
-        <div>
+        <div className={style['main-menu-container']}>
             <nav>
-                <ul className = "main-menu">
+                <ul className = {style["main-menu"]}>
                     {menuItems}
                 </ul>
             </nav>

@@ -1,0 +1,22 @@
+.main-menu{
+    height: 70px;
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 2px;
+    border-bottom: 2px solid #d2d2d2;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.main-menu__item{
+    list-style: none;
+    padding-right: 100px;
+}
+
+.main-menu__item > a{
+    font-size: 25px;
+    font-weight: 550;
+    color: #464646;
+    text-decoration: none;
+}   
