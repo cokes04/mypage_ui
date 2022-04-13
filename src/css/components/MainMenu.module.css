@@ -9,12 +9,12 @@
     display: flex;
 }
 
-.main-menu__item{
+.main-menu-item{
     list-style: none;
     padding-right: 100px;
 }
 
-.main-menu__item > a{
+.main-menu-item > a{
     font-size: 25px;
     font-weight: 550;
     color: #464646;

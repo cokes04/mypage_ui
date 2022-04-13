@@ -1,90 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import NovelInfo from '../components/NovelInfo';
+import PageButtons from '../components/PageButtons';
+import { getNovelsOfUser } from '../apis/Api';
+import { getUserId } from '../utils/AuthUtil';
+import { Col, Container, Row, Spinner } from 'react-bootstrap';
 
-const MyCreationPage = () => {
+const MyCreationPage = ({...props}) => {
+    const [loading, setLoading] = useState(true)
+    const [pageInfo, setPageInfo] = useState({ 
+        page : 0,
+        size : 10,
+        sort : 'newest_create'
+    })
 
-    const [novelList, setNovelList] = useState([]);
-    const [totalNovelCount, setTotalNovelCount] = useState(0);
+    const [novelList, setNovelList] = useState([])
+    const [totalCount, setTotalCount] = useState(0)
+    const [totalPage, setTotalPage] = useState(0)
 
-    /* useEffect( () => {
-        요청
-        .then( (response) => {
-            const data = response.data;
-            setNovelList(data.???);
+    useEffect( async () =>{
+        let novelResponse = await getNovelsOfUser(getUserId(), pageInfo)
 
-        })
-        .error( (error) => {
-            // 오류출력후
-            // 메인페이지로
-        })
-    }); */
+        setTotalCount(novelResponse.data.totalCount)
+        setTotalPage(novelResponse.data.totalPage)
+        setNovelList(novelResponse.data.novelList)
+        setLoading(false)
 
-    useEffect( () => {
-        const tmpNovel = {
-            id : 10,
-            title : '임시 소설',
-            description : '설명설명설명설명설명설명',
-            author : '나',
-            round : 10
-        };
+    }, [pageInfo]); 
 
-        setNovelList([tmpNovel]);
-        console.log(novelList);
-    },[]);
-
-    const printNovelInfos = () => {
-        if(totalNovelCount === 0)
-            return notExistMessage();
-        else
-            return novelInfos();
-    };
-
-    const notExistMessage = () => {
-        return <p>등록된 작품이 없습니다.</p>
-    };
 
     const novelInfos = () => {
-        return novelList.map( (novel) => 
-            <div>
-                <NovelInfo key = {novel.id} 
-                        id = {novel.id}
-                        title = {novel.title}
-                        description = {novel.description}
-                        author = {novel.author} 
-                        round = {novel.round}
-                /> 
-                <div>
-                    <Link to={'/my_creation/write/' + novel.id}>
-                        <div>
+        return novelList.map( (novel, index) => 
+            <Row key = {index}>
+                <Col md={10}><NovelInfo novel = {novel} author={{}}/> </Col>
+
+                <Col md={2} className='p-4 align-self-start'>
+                    <Row>
+                        <Link to={'/my_creation/write/' + novel.novelId} style={{fontSize : "30px"}}>
                             글쓰기
-                        </div>
-                    </Link>
-                    <Link to={'/my_creation/manage/' + novel.id}>
-                        <div>
+                        </Link>
+                    </Row>
+                    <Row>
+                        <Link to={'/my_creation/manage/' + novel.novelId} style={{fontSize : "30px"}}>
                             작품 관리
-                        </div>
-                    </Link>
-                </div>
-            </div>
+                        </Link>
+                    </Row>
+                </Col>
+            </Row>
         );
     }
 
 
-    return ( 
-                <div>
-                    <div>
-                        <Link to = '/my_creation/register'>
-                            <button>
-                                새 작품 등록
-                            </button>
-                        </Link>
-                    </div>
-                    <div>
-                        {printNovelInfos()}
-                    </div>
-                    
-                </div>
+    return ( loading ? <Spinner animation='border'/> :
+        <Container>
+            
+            <Row className='m-4 justify-content-center'>
+                <Link to = '/my_creation/register'  style={{fontSize : "50px"}}>
+                    작품 등록
+                </Link>  
+            </Row>
+
+            {totalCount === 0 ? <p>등록된 작품이 없습니다.</p> : novelInfos()}
+
+            <PageButtons    printButtonCount={3}
+                            currentPage = {pageInfo.page}
+                            totalPage = {totalPage}
+                            setPage = { (newPage) => setPageInfo({...pageInfo, page : newPage})} />
+            
+        </Container>
             );
 }
 

@@ -1,0 +1,183 @@
+.write-container{
+    width: 70%;
+    height: 1000px;
+    margin: 0px auto;
+    margin-top: 10px;
+    margin-bottom: 100px;
+    padding: 30px;
+    border : 2px solid #ddd;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+    display: flex;
+    flex-direction : column;
+    align-items: center;
+}
+
+.title-box{
+    height: 40px;
+    width: 90%;
+    margin-bottom: 15px;
+}
+
+.title-box > input{
+    height: 29px;
+    width: 100%;
+    padding : 3px;
+    padding-left: 7px;
+    font-size: 17px;
+}
+
+.option-box{
+    width: 100%;
+    height: 80px;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction : row;
+    align-items: center;
+    justify-content: center;
+}
+
+.option-box > div {
+    width: 30%;
+    height: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.option-box > div > span{
+    font-size: 20px;
+}
+
+.target-box{
+}
+
+.targets{
+    width: 100%;
+    height: 50%;
+    padding: 5px;
+}
+
+.targets > select  {
+    width: 30%;
+    height: 40px;
+    font-size: 17px;
+}
+
+
+.open-box{
+}
+
+.open-message{
+    font-size: 25px;
+    line-height: 70px;
+}
+
+.open-box > div{
+    width: 100%;
+    height: 50%;
+    padding: 5px;
+    padding-top: 10px;
+    font-size: 17px;
+}
+.open-box > div > label{
+    margin: 5px;
+}
+
+.open-time-box{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction : row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.open-time-box > span{
+    font-size: 20px;
+}
+.open-time-box > div{
+    margin-left: 10px;
+}
+.date-box{
+    height: 40px;
+    width: 120px;
+}
+.date-box > div{
+    height: 100%;
+    width: 100%;
+}
+
+.date-box > div > div{
+    height: 100%;
+    width: 100%;
+}
+
+.date-box > div > div > input{
+    height: 80.13%;
+    width: 93.38%;
+    font-size: 17px;
+    padding: 2px;
+}
+
+.hours-box{
+    height: 40px;
+    width: 60px;
+}
+.hours-box > select {
+    height: 100%;
+    width: 100%;
+    font-size: 17px;
+    padding: 2px;
+}
+
+.minutes-box{
+    height: 40px;
+    width: 60px;
+}
+
+.minutes-box > select {
+    height: 100%;
+    width: 100%;
+    font-size: 17px;
+    padding: 2px;
+}
+
+.content-box{
+    height: 500px;
+    width: 90%;
+    padding: 20px;
+    margin-bottom: 50px;
+}
+
+.content-box > textarea{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.autohr-comment-box{
+    height: 180px;
+    width: 90%;
+    padding: 20px;
+    margin-bottom: 50px;
+}
+
+.autohr-comment-box > textarea{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.submit{
+    width: 110px;
+    height: 60px;
+    padding: 10px;
+    cursor:pointer
+
+}
+.submit-img{
+    width: 100%;
+    height: 100%;
+}

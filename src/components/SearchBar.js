@@ -1,7 +1,6 @@
-import React, {useEffect, useState }  from 'react';
+import {useEffect, useState }  from 'react';
+import { Form, Button, InputGroup } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import style from '../css/components/SearchBar.module.css'
-import SearchBtnImg from "../img/search_btn.png"
 
 const SearchBar = () => {
     const [keyword, setKeyword] = useState('');
@@ -21,35 +20,29 @@ const SearchBar = () => {
         if(isRedirect){
             return <Redirect to = {{
                 pathname : '/search',
-                search : '?keyword=' + keyword,
-            }} />
+                search : '?keyword=' + keyword,}} />
         }
     }
     
     useEffect( () => {
-        setKeyword('');
+        setKeyword('')
         if(isRedirect)
             setIsRedirect(false);
-        }, [isRedirect]);
+        }, [isRedirect])
 
     return (
-        <div className={style['search-bar']}>
-            <input className={style['search-bar__box']}
-                type = "text" 
-                placeholder="검색" 
-                value={keyword} 
-                onChange={e => setKeyword(e.target.value)} 
-                onKeyPress={e => enterPressEvent(e)}/>
-
-            <div className={style['search-bar__btn']}
-                onClick={search} >
-                <img className={style['search-bar__btn__img']}
-                    src={SearchBtnImg}
-                    alt='search_btn'/>
-            </div>
+        <InputGroup className = "d-flex">
+            <Form.Control className="form-control"
+                    required 
+                    type="search" 
+                    placeholder="검색"
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
+                    onKeyPress={e => enterPressEvent(e)} />
+            <Button type="button" onClick={search}>검색</Button>
             {redirect()}
-        </div>
+        </InputGroup>
         )
 }
 
-export default SearchBar;
+export default SearchBar

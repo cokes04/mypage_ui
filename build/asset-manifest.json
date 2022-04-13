@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.5ebcb8aa.chunk.css",
+    "main.js": "/static/js/main.258729b1.chunk.js",
+    "main.js.map": "/static/js/main.258729b1.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.febc2dd4.js",
+    "runtime-main.js.map": "/static/js/runtime-main.febc2dd4.js.map",
+    "static/css/2.ecdd39c8.chunk.css": "/static/css/2.ecdd39c8.chunk.css",
+    "static/js/2.10f4e565.chunk.js": "/static/js/2.10f4e565.chunk.js",
+    "static/js/2.10f4e565.chunk.js.map": "/static/js/2.10f4e565.chunk.js.map",
+    "static/js/3.3921cfcb.chunk.js": "/static/js/3.3921cfcb.chunk.js",
+    "static/js/3.3921cfcb.chunk.js.map": "/static/js/3.3921cfcb.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.ecdd39c8.chunk.css.map": "/static/css/2.ecdd39c8.chunk.css.map",
+    "static/css/main.5ebcb8aa.chunk.css.map": "/static/css/main.5ebcb8aa.chunk.css.map",
+    "static/js/2.10f4e565.chunk.js.LICENSE.txt": "/static/js/2.10f4e565.chunk.js.LICENSE.txt",
+    "static/media/emailSignUp.ecf705d3.png": "/static/media/emailSignUp.ecf705d3.png",
+    "static/media/profile.8065efaf.png": "/static/media/profile.8065efaf.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.febc2dd4.js",
+    "static/css/2.ecdd39c8.chunk.css",
+    "static/js/2.10f4e565.chunk.js",
+    "static/css/main.5ebcb8aa.chunk.css",
+    "static/js/main.258729b1.chunk.js"
+  ]
+}

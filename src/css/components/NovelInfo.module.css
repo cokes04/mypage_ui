@@ -1,80 +1,19 @@
-.novel{
-    height: 200px;
-    width: 700px;
-    margin: 0 auto;
-    margin-top: 2px;
-    align-items: center;
-    justify-content: left;
-    display: flex;
-    flex-direction : row;
+.novel-cover-img{
+    height: 180px;
+    width: 150px;
 }
 
-.novel__cover{
-    box-sizing: border-box;
-    margin-right: 20px;
-}
-
-.novel__cover__img{
-    height: 140px;
-    width: 120px;
-}
-
-.novel__info-box{
-    height: 150px;
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-}
-.novel__info-box__1{
-    height: 50px;
-    width: 500px;
-    display: flex;
-    flex-direction : row;
-    margin: 5px auto;
-    justify-content: left;
-    text-align: left;
-}
-.novel__info-box__1 > a{
-    text-decoration: none;
-}
-.novel__title{
-    min-width: 0px;
-    max-width: 200px;
-    font-size: 28px;
+.novel-title{
+    font-size: 32px;
     font-weight: 550;
     color: #323232;
-    padding-right: 10px;
-    margin: 1px;
-}
-.novel__author{
-    min-width: 0px;
-    max-width: 200px;
-    margin-top: 6.5px;
-    font-size: 17px;
-    font-weight: 400;
-    color: #323232;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    word-wrap:break-word;
 }
 
-.novel__description{
-    height: 50px;
-    width:500px;
-    font-size: 15px;
-    font-weight: 300;
-    color: #5a5a5a;
-    margin-bottom: 5px;
-    padding-left: 10px;
-    text-align: left;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-.novel__round{
-    height: 50px;
-    padding-left: 10px;
-    font-size: 15px;
-    color: #323232;
-    text-align: left;
+.novel-author{
+    font-size: 17px;
+    font-weight: 400;
+    overflow : hidden;
+    white-space : nowrap;
+    text-overflow : ellipsis;
 }

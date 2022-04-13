@@ -2,75 +2,83 @@ import React, { useEffect, useState } from 'react';
 import NovelGenreMenu from '../components/NovelGenreMenu';
 import NovelInfo from '../components/NovelInfo';
 import NovelTypeMenu from '../components/NovelTypeMenu';
-import NovelPageButtons from '../components/NovelPageButtons';
-import { getNovelList } from '../utils/Api';
+import PageButtons from '../components/PageButtons';
+import { getAuthor, getAuthors, getNovels } from '../apis/Api';
+import {Container, Spinner} from 'react-bootstrap';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const NovelListPage = ( {free, type, genre, ...props} ) => {
+const NovelListPage = ( {type, payment, genre, ageGroup, ...props} ) => {
+    const history = useHistory()
+    const [loading, setLoading] = useState(true)
 
-    const [novelInfo, setNovelInfo] = useState({    free : free,
+    const [novelInfo, setNovelInfo] = useState({    
                                                     type : type,
+                                                    payment : payment,
                                                     genre : genre,
-
-                                            });
+                                                    ageGroup : ageGroup,
+                                            })
 
     const [pageInfo, setPageInfo] = useState({  page : 0,
                                                 size : 20,
-                                                sort : 'NEWEST'
-                                            });
+                                                sort : 'newest_create'
+                                            })
 
-
-    const [novelList, setNovelList] = useState([]);
-    const [totalNovelCount, setTotalNovelCount] = useState(0);
-    const [totalNovelPage, setTotalNovelPage] = useState(0);
+    const [novelList, setNovelList] = useState([])
+    const [authorMap, setAuthorMap] = useState(new Map())
+    const [totalCount, setTotalCount] = useState(0)
+    const [totalPage, setTotalPage] = useState(0)
 
     useEffect( () => {
         let newNovelInfo = novelInfo;
-        if(free !== novelInfo.free)
-            newNovelInfo = {...newNovelInfo, free : free};
+        if(payment !== novelInfo.payment)
+            newNovelInfo = {...newNovelInfo, payment : payment}
         
         if(type !== novelInfo.type)
-            newNovelInfo = {...newNovelInfo, type : type};
+            newNovelInfo = {...newNovelInfo, type : type}
 
         if(genre !== novelInfo.genre)
-            newNovelInfo = {...newNovelInfo, genre : genre};
+            newNovelInfo = {...newNovelInfo, genre : genre}
+
+        setLoading(true)
+        setNovelInfo(newNovelInfo)
+    }, [type, payment, genre, ageGroup])
 
 
-        //console.log(free, type, genre, props.match.url);
-        setNovelInfo(newNovelInfo);
-    }, [free, type, genre])
-
-
-    useEffect ( () =>{
-            getNovelList( novelInfo, pageInfo)
-                .then( (response) => {
-                    const data = response.data;
-                    setTotalNovelCount(data.totalNovelCount);
-                    setTotalNovelPage(data.totalNovelPage);
-                    setNovelList(data.novelList);
-                })
-                .catch( error => {
-                    console.log("error", error)
-                } );
+    useEffect ( async () =>{
+        let novelResponse;
+        try{
+            novelResponse = await getNovels(novelInfo, pageInfo)
+            setTotalCount(novelResponse.data.totalCount)
+            setTotalPage(novelResponse.data.totalPage)
+            setNovelList(novelResponse.data.novelList)
+        }catch(err){
+            return
         }
-    , [novelInfo, pageInfo] );
 
-    const printNovelInfos = () => {
-        if(totalNovelCount === 0)
-            return notExistMessage();
-        else
-            return novelInfos();
-    };
-
-    const notExistMessage = () => {
-        return <p>등록된 작품이 없습니다.</p>
-    };
+        try{
+            const authorIdList = [... new Set(novelResponse.data.novelList.map( n => n.authorId)) ]
+            if(authorIdList.length !== 0){
+                let authorsResponse = await getAuthors(authorIdList)
+                let authorMap = new Map();
+                
+                if (authorsResponse.data.authorList){
+                    for( let author of authorsResponse.data.authorList)
+                        authorMap.set(author.authorId, author)
+                }
+                else
+                    authorMap.set(authorsResponse.data.authorId, authorsResponse.data)
+                
+                setAuthorMap(authorMap)
+            }
+        }catch(err){
+            
+        }
+        setLoading(false) 
+    }, [novelInfo, pageInfo] );
 
     const novelInfos = () => {
-        return novelList.map( (novel, index) =>
-             <NovelInfo key = {novel.id} 
-                    num = {index + 1} 
-                    novel = {novel}
-                    />
+        return novelList && novelList.map( (novel, index) =>
+             <NovelInfo key = {index} novel = {novel}  author = {authorMap.get(novel.authorId) || {}}/>
         );
     }
 
@@ -87,15 +95,21 @@ const NovelListPage = ( {free, type, genre, ...props} ) => {
     } 
 
     return (
-        <div>
+        <Container>
             <NovelTypeMenu url = {url1()} />
             <NovelGenreMenu url = {url2()} />
-            <div>
-                {printNovelInfos()}
-            </div>
-                <NovelPageButtons currentPage = {pageInfo.page} totalNovelPage = {totalNovelPage} setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
 
-        </div>
+            {loading ? <Spinner animation = 'border' /> :
+                totalCount === 0 ? <p>등록된 작품이 없습니다.</p> : 
+                <Container> 
+                    {novelInfos()}
+                    <PageButtons currentPage = {pageInfo.page} 
+                                 totalPage = {totalPage} 
+                                 setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
+                </Container>
+            }
+
+        </Container>
     );
 }
 

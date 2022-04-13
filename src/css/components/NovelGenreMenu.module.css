@@ -1,19 +1,9 @@
-.novel-genre-menu {
-    height: 50px;
-    width: 50%;
-    margin: 0 auto;
-    margin-top: 5px;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-}
-
-.novel-genre-menu__item{
+.novel-genre-menu-item{
     list-style: none;
     padding-right: 10px;
 }
 
-.novel-genre-menu__item > a{
+.novel-genre-menu-item > a{
     font-size: 15px;
     font-weight: 550;
     color: #464646;

@@ -1,43 +1,27 @@
-import React  from 'react';
-import style from '../css/components/NovelTypeMenu.module.css'
+import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import style from '../css/components/NovelTypeMenu.module.css'
 
 const NovelTypeMenu = ({url}) => {
     const menuList = [
-                        {
-                            name : '전체',
-                            to : "/all",
-                        },
-                        {
-
-                            name : '신작',
-                            to : "/new",
-                        },
-                        {
-
-                            name : '완결',
-                            to : "/end",
-                        },
+                        {name : '전체',
+                            to : "/all",},
+                        { name : '신작',
+                            to : "/new", },
+                        {name : '연재',
+                            to : "/run",},
+                        {name : '완결',
+                            to : "/finish",},
                     ]
 
-    const menuItems = menuList.map( (menu) => 
-        <li key = {menu.name} className={style['novel-type-menu__item']}>
-            <Link to={url + menu.to}> 
-                {menu.name}
-            </Link>
-        </li>        
-        );
-
+    const menuItems = menuList.map( (menu, index) => <Col className ={style["novel-type-menu-item"]} key={index}>
+                                                        <Link to={url + menu.to}> {menu.name}</Link>
+                                                     </Col>)      
     return (
-            <div className={style['novel-type-menu-container']}>
-                <nav>
-                    <ul className = {style["novel-type-menu"]}>
-                        {menuItems}
-                    </ul>
-                </nav>
-            </div>
-);
-
+        <Row>
+             {menuItems} 
+        </Row>
+        );
 }
 
 export default NovelTypeMenu;

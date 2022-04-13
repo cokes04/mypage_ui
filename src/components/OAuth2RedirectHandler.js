@@ -1,24 +1,16 @@
-import React from 'react';
 import { Redirect } from 'react-router-dom'
-import { setToken } from '../utils/Api';
 
-const OAuth2RedirectHandler = ({authenticated, ...props}) => {
+const OAuth2RedirectHandler = ({authenticate, accessToken, ...props}) => {
+    console.log(accessToken);
+    if (accessToken) {
+        authenticate(accessToken);
+        return <Redirect to={{
+            pathname: '/',
+        }}/>
+    } else 
+        return <Redirect to={{
+            pathname: '/login',
+        }}/>
 
-    let token = new URL(window.location.href).searchParams.get("token");
-    
-    if (token) {
-        setToken(token);
-        return(
-            <Redirect to={{
-                pathname: "/",
-            }}/>
-        )
-    } else {
-        return(
-            <Redirect to={{
-                pathname: "/login",
-            }}/>
-        )
-    }
 } 
 export default OAuth2RedirectHandler;
