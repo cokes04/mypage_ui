@@ -1,11 +1,10 @@
-FROM node:12.18.2 as builder
+FROM node:16.15.1 as builder
 
 WORKDIR /app
 COPY ./package*.json ./ 
 RUN npm install # npm install
 COPY . . 
 RUN npm run build 
-
 
 FROM nginx:latest
 

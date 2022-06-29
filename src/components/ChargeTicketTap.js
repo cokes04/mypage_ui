@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { getNovelsByIds } from '../apis/Api';
+import { getNovels } from '../apis/NovelApi';
 import { getChargeTicketHistorys } from '../apis/TicketApi';
 import { getUserId } from '../utils/AuthUtil';
 import PageButtons from './PageButtons';
@@ -12,26 +12,28 @@ const ChargeTicketTap = ({}) => {
 
     const [novelMap, setNovelMap] = useState(new Map())
 
-    const [pageInfo, setPageInfo] = useState({ page : 0,  size : 20,})
+    const [pageInfo, setPageInfo] = useState({ page : 0,  size : 20, sort : "newest_charge"})
     const [totalPage, setTotalPage] = useState(0)
     
 
-    useEffect( async () => {
-        try{
-            const userId = getUserId()
-            let chargeTikcetHistoryResponse = await getChargeTicketHistorys(userId, pageInfo)
-            setChargeTikcetHistorys(chargeTikcetHistoryResponse.data.historyList)
-            setTotalPage(chargeTikcetHistoryResponse.data.totalPage)
-            setNovelMapToResponse(chargeTikcetHistoryResponse.data.historyList)
-        } catch (e) {
-            
+    useEffect( () => {
+        const request = async () => {
+            try{
+                const userId = getUserId()
+                let chargeTikcetHistoryResponse = await getChargeTicketHistorys(userId, pageInfo)
+                setChargeTikcetHistorys(chargeTikcetHistoryResponse.data.historyList)
+                setTotalPage(chargeTikcetHistoryResponse.data.totalPage)
+                setNovelMapToResponse(chargeTikcetHistoryResponse.data.historyList)
+            } catch (e) {}
         }
+        request()
+        
     }, [pageInfo])
 
     const setNovelMapToResponse = async (historyList) => {
         const novelIdList = [... new Set(historyList.filter(cth => cth.novelId != null).map( ch => ch.novelId)) ]
         if(novelIdList.length !== 0){
-            let novelResponse = await getNovelsByIds(novelIdList)
+            let novelResponse = await getNovels(novelIdList)
             let map = new Map();
             
             if (novelResponse.data.novelList){
@@ -59,7 +61,8 @@ const ChargeTicketTap = ({}) => {
             <td>{index}</td>
             <td>{novelMap.get(cth.novelId) ? <Link to = {`/novel/${novelMap.get(cth.novelId).novelId}`}> {novelMap.get(cth.novelId).title} </Link>: "-"}</td>
             <td>{renderTicketType(cth.ticketType)}</td>
-            <td>{cth.paid + cth.free}</td>
+            <td>{cth.paid}</td>
+            <td>{cth.free}</td>
             <td>{cth.usedCash}</td>
             <td>{cth.chargedDate}</td>
         </tr>)
@@ -79,7 +82,8 @@ const ChargeTicketTap = ({}) => {
                             <th>#</th>
                             <th>작품 명</th>
                             <th>소장/대여</th>
-                            <th>이용권 갯수</th>
+                            <th>구매 이용권</th>
+                            <th>무료 이용권</th>
                             <th>사용 캐시</th>
                             <th>구매일</th>
                             </tr>

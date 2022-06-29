@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import NovelGenreMenu from '../components/NovelGenreMenu';
-import NovelInfo from '../components/NovelInfo';
-import NovelTypeMenu from '../components/NovelTypeMenu';
-import PageButtons from '../components/PageButtons';
-import { getAuthor, getAuthors, getNovels } from '../apis/Api';
-import {Container, Spinner} from 'react-bootstrap';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import React, { useEffect, useState } from 'react'
+import NovelGenreMenu from '../components/NovelGenreMenu'
+import NovelInfo from '../components/NovelInfo'
+import NovelTypeMenu from '../components/NovelTypeMenu'
+import PageButtons from '../components/PageButtons'
+import { getAuthors } from '../apis/Api'
+import { SearchNovel } from '../apis/NovelApi'
+import {Container, Spinner} from 'react-bootstrap'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { ynToBool } from '../apis/mapper'
 
 const NovelListPage = ( {type, payment, genre, ageGroup, ...props} ) => {
     const history = useHistory()
@@ -44,36 +46,47 @@ const NovelListPage = ( {type, payment, genre, ageGroup, ...props} ) => {
     }, [type, payment, genre, ageGroup])
 
 
-    useEffect ( async () =>{
-        let novelResponse;
-        try{
-            novelResponse = await getNovels(novelInfo, pageInfo)
-            setTotalCount(novelResponse.data.totalCount)
-            setTotalPage(novelResponse.data.totalPage)
-            setNovelList(novelResponse.data.novelList)
-        }catch(err){
-            return
+    useEffect ( () =>{
+        const request = async (novelInfo, pageInfo)=>{
+            let novelResponse;
+            try{
+                novelResponse = await SearchNovel(novelInfo, pageInfo)
+                setTotalCount(novelResponse.data.totalCount)
+                setTotalPage(novelResponse.data.totalPage)
+
+                novelResponse.data.novelList.map( n => {
+                    n.free = ynToBool(n.free)
+                    n.finish = ynToBool(n.finish)
+                    return n
+                })
+                
+                setNovelList(novelResponse.data.novelList)
+            }catch(err){
+                return
+            }
+    
+            try{
+                const authorIdList = [... new Set(novelResponse.data.novelList.map( n => n.authorId)) ]
+                if(authorIdList.length !== 0){
+                    let authorsResponse = await getAuthors(authorIdList)
+                    let authorMap = new Map();
+                    
+                    if (authorsResponse.data.authorList){
+                        for( let author of authorsResponse.data.authorList)
+                            authorMap.set(author.authorId, author)
+                    }
+                    else
+                        authorMap.set(authorsResponse.data.authorId, authorsResponse.data)
+                    
+                    setAuthorMap(authorMap)
+                }
+            }catch(err){
+                
+            }
+            setLoading(false)
         }
 
-        try{
-            const authorIdList = [... new Set(novelResponse.data.novelList.map( n => n.authorId)) ]
-            if(authorIdList.length !== 0){
-                let authorsResponse = await getAuthors(authorIdList)
-                let authorMap = new Map();
-                
-                if (authorsResponse.data.authorList){
-                    for( let author of authorsResponse.data.authorList)
-                        authorMap.set(author.authorId, author)
-                }
-                else
-                    authorMap.set(authorsResponse.data.authorId, authorsResponse.data)
-                
-                setAuthorMap(authorMap)
-            }
-        }catch(err){
-            
-        }
-        setLoading(false) 
+        request(novelInfo, pageInfo)
     }, [novelInfo, pageInfo] );
 
     const novelInfos = () => {

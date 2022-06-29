@@ -1,5 +1,4 @@
 import {React, useState} from 'react'
-import  { useHistory} from 'react-router'
 import { login } from '../apis/AuthApi'
 import { Link } from 'react-router-dom'
 import googleSignImg from '../img/google.png'
@@ -7,7 +6,6 @@ import {GOOGLE_AUTH_URL} from '../utils/Oauth2'
 import { Container, Button, Form, Row, Col } from "react-bootstrap"
 
 const SignPage = ( {authenticate, ...props} ) => {
-    const history = useHistory()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [printMessage, setPrintMessage] = useState(false)
@@ -28,7 +26,7 @@ const SignPage = ( {authenticate, ...props} ) => {
     };
 
     const tmpLogin1 = () => {
-        login("tmp@mypage.com", "TDtmptmp123@@")
+        login("tmp1111@mypage.com", "TMPtmp111@@")
         .then(response => {
             authenticate(response.data.accessToken)
             window.location.replace("/")
@@ -38,8 +36,9 @@ const SignPage = ( {authenticate, ...props} ) => {
             setPrintMessage(true)
         })
     }
+    
     const tmpLogin2 = () => {
-        login("aaa@mypage.com", "TDtmptmp123@@")
+        login("tmp2222@mypage.com", "TMPtmp222@@")
         .then(response => {
             authenticate(response.data.accessToken)
             window.location.replace("/")
@@ -49,8 +48,9 @@ const SignPage = ( {authenticate, ...props} ) => {
             setPrintMessage(true)
         })
     }
+
     const tmpLogin3 = () => {
-        login("hhh@mypage.com", "TDtmptmp123@@")
+        login("tmp3333@mypage.com", "TMPtmp333@@")
         .then(response => {
             authenticate(response.data.accessToken)
             window.location.replace("/")

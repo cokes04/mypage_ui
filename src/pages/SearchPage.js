@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import NovelInfo from '../components/NovelInfo';
-import PageButtons from '../components/PageButtons';
-import SearchMenu from '../components/SearchMenu';
-import { getAuthors, getNovels } from '../apis/Api';
-import { Container, Spinner } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import React, { useEffect, useState } from 'react'
+import NovelInfo from '../components/NovelInfo'
+import PageButtons from '../components/PageButtons'
+import SearchMenu from '../components/SearchMenu'
+import { getAuthors } from '../apis/Api'
+import { SearchNovel } from '../apis/NovelApi'
+import { Container, Spinner } from 'react-bootstrap'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
 const SearchPage = ({keyword, ...props}) => {
     const history = useHistory()
@@ -24,7 +25,7 @@ const SearchPage = ({keyword, ...props}) => {
         setLoading(true)
         let novelResponse;
         try{
-            novelResponse = await getNovels(getNovelInfo(), pageInfo)
+            novelResponse = await SearchNovel(getNovelInfo(), pageInfo)
             setTotalCount(novelResponse.data.totalCount)
             setTotalPage(novelResponse.data.totalPage)
             setNovelList(novelResponse.data.novelList)

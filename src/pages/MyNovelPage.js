@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import PageButtons from '../components/PageButtons';
-import {getAuthors, getFavoriteNovelsOfUser} from "../apis/Api";
+import {getAuthors} from "../apis/Api";
+import {getFavoriteNovelsOfUser} from "../apis/NovelApi";
 import { getUserId } from '../utils/AuthUtil';
 import NovelInfo from '../components/NovelInfo';
 import { useHistory } from 'react-router-dom';
@@ -21,9 +22,11 @@ const MyNovelPage = () => {
     const [authorMap, setAuthorMap] = useState(new Map())
 
     useEffect ( async () =>{
+        const userId = getUserId()
+
         let novelResponse;
         try{
-            novelResponse = await getFavoriteNovelsOfUser(getUserId(), pageInfo)
+            novelResponse = await getFavoriteNovelsOfUser(userId, pageInfo)
             setTotalCount(novelResponse.data.totalCount)
             setTotalPage(novelResponse.data.totalPage)
             setNovelList(novelResponse.data.novelList)
@@ -58,19 +61,17 @@ const MyNovelPage = () => {
         );
     }
 
-    return (
-        <Container>
-            {loading ? <Spinner animation = 'border' /> :
-                totalCount === 0 ? <p>작품을 추가해 주세요.</p> : 
-                <Container> 
-                    {novelInfos()}
-                    <PageButtons currentPage = {pageInfo.page} 
-                                 totalPage = {totalPage} 
-                                 setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
-                </Container>
-            }
-
-        </Container>
+    return ( loading ? <Spinner animation = 'border' /> :
+            <Container>
+                    { totalCount === 0  ? <p style={{fontSize:"30px"}}>작품을 추가해 주세요.</p> : 
+                    <> 
+                        {novelInfos()}
+                        <PageButtons currentPage = {pageInfo.page} 
+                                    totalPage = {totalPage} 
+                                    setPage = { (newPage) => setPageInfo( {...pageInfo, page : newPage})  } />
+                    </>
+                    }
+            </Container>
     );
 }
 

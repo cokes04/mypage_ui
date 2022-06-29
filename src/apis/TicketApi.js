@@ -12,20 +12,26 @@ export function getTicket(userId, novelId){
         }
     })
 }
+
 export function getChargeTicketHistorys(userId, pageInfo){
-    return authInstance.get(`/api/users/${userId}/tickets/history/charge`,{
+    return authInstance.get(`/api/tickets/history/charge`,{
         params : {
+            userId : userId,
             page : pageInfo.page,
-            size : pageInfo.size
+            size : pageInfo.size,
+            sort : pageInfo.sort
         }
     })
 }
 
-export function chargeTicket(userId, novelId, ticketKindsId){
-    return authInstance.post('/api/tickets', {
-        userId : userId,
-        novelId : novelId,
-        ticketKindsId : ticketKindsId,
+
+// POST PUT PATCH DELETE
+
+export function spendTicket(userId, episodeId, type){
+    return authInstance.patch('/api/tickets/use', {
+        userId : userId, 
+        episodeId : episodeId, 
+        type : type
     })
 }
 

@@ -3,8 +3,8 @@ import jwt from 'jwt-decode';
 
 const cookies = new Cookies();
 
-const ACCESS_TOKEN_NAME = 'a_t';
-const REFRESH_TOKEN_NAME = "r_t";
+export const ACCESS_TOKEN_NAME = 'Authorization';
+export const REFRESH_TOKEN_NAME = "r_t";
 
 const AUTHENTICATED = 'ex_r_t';
 const USER_ID = 'id';
@@ -23,9 +23,12 @@ export function setAuth(newAccessToken){
 }
 
 export function unAuth(){
-    removeAccessToken();
-
+    const userId = getUserInfo().id
     const expired_date =  new Date('1970-01-01')
+
+    removeAccessToken()
+
+    setUserIdCookie(userId, expired_date)
     setExistRefreshTokenCookie(expired_date)
 }
 
@@ -95,11 +98,10 @@ const setExistRefreshTokenCookie = (expired_date) => {
         });  
 }
 
-const setUserIdCookie = () => {
-    const userInfo = getUserInfo();
-    cookies.set(USER_ID, userInfo.id, {
+const setUserIdCookie = (userId, expired_date) => {
+    cookies.set(USER_ID, userId, {
         path: '/',
-        expires : userInfo.exp,
+        expires : expired_date,
         httpOnly : false,
         secure : false,
         sameSite : "Lax"

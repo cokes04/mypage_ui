@@ -10,8 +10,8 @@ const EpisodeForm = ({onsubmit, submitBtnName, freeNovel, episode}) => {
     const [mainText, setMainText] = useState('')
     const [authorComment, setAuthorComment] = useState('')
     const [category, setCategory] = useState('episode')
-    const [adult ,setAdult] = useState("n")
-    const [free, setFree] = useState("y")
+    const [adult ,setAdult] = useState(false)
+    const [free, setFree] = useState(true)
 
     const [openLevel, setOpenLevel] = useState("now")
     const [openDate, setOpenDate] = useState(new Date())
@@ -141,8 +141,8 @@ const EpisodeForm = ({onsubmit, submitBtnName, freeNovel, episode}) => {
                         <InputGroup>
                             <InputGroup.Text>열람 대상</InputGroup.Text>
                             <Form.Select value = {adult}  onChange = {e => setAdult(e.target.value)} >
-                                <option value="n">전체 이용</option>
-                                <option value="y">성인 전용</option>
+                                <option value={false}>전체 이용</option>
+                                <option value={true}>성인 전용</option>
                             </Form.Select>
                         </InputGroup>
                     </Col>   
@@ -161,9 +161,9 @@ const EpisodeForm = ({onsubmit, submitBtnName, freeNovel, episode}) => {
 
                     <Col md={3}>
                         <InputGroup>
-                            <Form.Select value = {freeNovel ? "y" : free} disabled = {freeNovel} onChange = {e => setFree(e.target.value)} >
-                                <option value="y">무료</option>
-                                <option value="n">유료</option>
+                            <Form.Select value = {free} disabled = {freeNovel} onChange = {e => setFree(e.target.value)} >
+                                <option value={true} disabled={free == "false" || free == false}>무료</option>
+                                <option value={false}>유료</option>
                             </Form.Select>
                         </InputGroup>
                     </Col>

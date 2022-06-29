@@ -1,10 +1,9 @@
 import {authInstance, nonAuthInstance} from './AuthApi';
 
-export function readyKakaoPay(productId, productName) {
+export function readyKakaoPay(cashKindsId ) {
     return authInstance.get('/api/pay/kakaopay/ready',{
         params : {
-            productId : productId,
-            productName : productName
+            cashKindsId  : cashKindsId 
         }
     })
 }

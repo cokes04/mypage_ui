@@ -8,38 +8,45 @@ const KakaoPayRedirectHandler = ({pg_token, result, ...props}) => {
     const [payReuslt, setPayReuslt] = useState({})
     const [payCashKinds, setPayCashKinds] = useState({})
 
-    useEffect( async () => {
-        let tid
-        try{
-            tid = window.opener.document.getElementById('tid').value
-        } catch(error){
-            return
-        }
-
-        if(result === "approval"){
+    useEffect( () => {
+        const request = async () => {
+            let tid
             try{
-                const response = await approvalKakaoPay(pg_token, tid)
-                const cashKindsRepsonse = await getBuyCashKinds()
-                
-                const cashKindsId = parseInt(response.data.productId)
-                const payCashKindsRes = cashKindsRepsonse.data.cashKindsList.find( ck => ck.cashKindsId === cashKindsId)
-
-                setPayReuslt(response.data)
-                setPayCashKinds(payCashKindsRes)
-                window.opener.success()
-                
-
-            } catch (error){
-                 window.opener.failure()
+                tid = window.opener.document.getElementById('tid').value
+            } catch(error){
+                return
             }
 
-        }else if(result === "cancel"){
-            window.opener.failure()
-        }else if(result === "fail"){
-            window.opener.failure()
-        }else{
-            window.opener.failure()
-        }
+            if(result === "approval"){
+                try{
+                    const response = await approvalKakaoPay(pg_token, tid)
+                    const cashKindsRepsonse = await getBuyCashKinds()
+                    
+                    const cashKindsId = Number(response.data.productNumber)
+                    const paidCashKindsRes = cashKindsRepsonse.data.cashKindsList.find( ck => ck.cashKindsId === cashKindsId)
+
+                    setPayReuslt(response.data)
+                    setPayCashKinds(paidCashKindsRes)
+                    window.opener.success()
+                    
+
+                } catch (error){
+                    window.opener.failure()
+                    window.close()
+                }
+
+            }else if(result === "cancel"){
+                window.opener.failure()
+                window.close()
+            }else if(result === "fail"){
+                window.opener.failure()
+                window.close()
+            }else{
+                window.opener.failure()
+                window.close()
+            }
+        } 
+        request()
     }, [])
 
     

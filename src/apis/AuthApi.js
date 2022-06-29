@@ -18,17 +18,17 @@ export const nonAuthInstance = axios.create({
 authInstance.interceptors.request.use(
     async config => { 
 
-        if(!config.headers.a_t && getAccessToken()){
-            config.headers.a_t = getAccessToken();
+        if(!config.headers.Authorization && getAccessToken()){
+            config.headers.Authorization = getAccessToken();
         }
-
-        if(!config.headers.a_t){
+        
+        if(!config.headers.Authorization){
             if(isExistRefreshToken())
                 await renewalToken()
                     .then( (response) => {
                         const accessToken = response.data.accessToken;
                         setAuth(accessToken);
-                        config.headers.a_t = getAccessToken();
+                        config.headers.Authorization = getAccessToken();
                     })
                     .catch( (error) => {
                         unAuth()
@@ -43,7 +43,7 @@ authInstance.interceptors.request.use(
   )
 
 
-export  function renewalToken(){
+export function renewalToken(){
     return renewalTokenInstance.post(
         '/api/auth/renewal',
     );

@@ -26,11 +26,12 @@ import PrivateRoute from './components/PrivateRoute';
 import { isExistRefreshToken, setAuth, unAuth, } from './utils/AuthUtil';
 import FindPasswordPage from './pages/FindPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import MonopolyApplyPage from './pages/MonopolyApplyPage';
 import AuthorPage from './pages/AuthorPage';
 import UsageHistoryPage from './pages/UsageHistoryPage';
 import PayApplyPage from './pages/PayApplyPage';
-
+import SettlementPage from './pages/SettlementPage';
+import TicketChargeResultPage from './pages/TicketChargeResultPage';
+import {ACCESS_TOKEN_NAME} from "./utils/AuthUtil";
 
 function App() {
        const [authenticated, setAuthenticated] = useState(false);
@@ -66,7 +67,10 @@ function App() {
 
                                    <Route path="/oauth2/redirect"
                                                  render={(props) => <OAuth2RedirectHandler authenticate={authenticate}
-                                                 accessToken={new URLSearchParams(props.location.search).get('a_t')}
+                                                 result={new URLSearchParams(props.location.search).get("result")}
+                                                 code={new URLSearchParams(props.location.search).get("code")}
+                                                 message={new URLSearchParams(props.location.search).get("message")}
+                                                 accessToken={new URLSearchParams(props.location.search).get(ACCESS_TOKEN_NAME)}
                                                  {...props} />}
                                                  exact />   
                                    
@@ -102,14 +106,13 @@ function App() {
                                                         exact />
 
                                                  <Route path='/episode/:episode_id'
-                                                        render={(props) => <EpisodePage id={props.match.params.episode_id} {...props} />} />
-
+                                                        render={(props) => <EpisodePage episodeId={props.match.params.episode_id} {...props} />} />
 
                                                  <Route path='/search'
                                                         render={(props) => <SearchPage keyword={new URLSearchParams(props.location.search).get('keyword')} {...props} />} />
 
                                                  <Route path='/novel/:novel_id'
-                                                        render={(props) => <NovelPage id={props.match.params.novel_id} authenticated={authenticated} {...props} />} />
+                                                        render={(props) => <NovelPage novelId={props.match.params.novel_id} authenticated={authenticated} {...props} />} />
 
                                                  <PrivateRoute authenticated={authenticated}
                                                         path='/mynovel'
@@ -128,7 +131,13 @@ function App() {
 
                                                  <PrivateRoute authenticated={authenticated}
                                                         path='/ticket/charge'
-                                                        render={(props) => <TicketChargePage novelId={new URLSearchParams(props.location.search).get('novelId')} authenticated={authenticated} {...props} />}
+                                                        render={(props) => <TicketChargePage novelId={new URLSearchParams(props.location.search).get('novelId')}
+                                                                                             episodeId={new URLSearchParams(props.location.search).get('episodeId')}
+                                                                                             authenticated={authenticated} {...props} />}
+                                                        exact />
+                                                 <PrivateRoute authenticated={authenticated}
+                                                        path='/ticket/charge/result'
+                                                        render={(props) => <TicketChargeResultPage />}
                                                         exact />
 
                                                  <PrivateRoute authenticated={authenticated}
@@ -150,15 +159,17 @@ function App() {
                                                  <Route path='/my_creation/manage/:novel_id'
                                                         render={(props) => <NovelManagePage id={props.match.params.novel_id} {...props} />}
                                                         exact />
-                                                 <Route path='/my_creation/monopoly_apply/:novel_id'
-                                                        render={(props) => <MonopolyApplyPage novelId={props.match.params.novel_id} {...props} />}
-                                                        exact />
                                                  <Route path='/my_creation/pay_apply/:novel_id'
                                                         render={(props) => <PayApplyPage novelId={props.match.params.novel_id} {...props} />}
                                                         exact />                                         
                                                  <PrivateRoute authenticated={authenticated}
                                                         path='/my_creation/register'
                                                         component={NovelRegisterPage}
+                                                        exact />
+
+                                                 <PrivateRoute authenticated={authenticated}
+                                                        path='/my_creation/settlement'
+                                                        component={SettlementPage}
                                                         exact />
 
                                                  <PrivateRoute authenticated={authenticated}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Container, Row, Spinner } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import { getAuthor, getNovel, paidApply } from '../apis/Api'
+import { getAuthor,} from '../apis/Api'
+import { getNovel, applyPaidNovel } from '../apis/NovelApi'
 import NovelInfo from '../components/NovelInfo'
 import { getUserId } from '../utils/AuthUtil'
 
@@ -33,7 +34,7 @@ const PayApplyPage = ({novelId}) => {
 
     const onSummit = async () => {
         try{
-            await paidApply(novelId)
+            await applyPaidNovel(novelId)
             alert("유료화 신청이 성공적으로 신청되었습니다.")
             history.goBack()
             

@@ -1,64 +1,91 @@
 import React, { useEffect, useState } from "react"
-import { Col, Container, FormControl, Image, Row, Spinner } from "react-bootstrap"
+import { Col, Container, FormControl, Image, Offcanvas, Row, Spinner} from "react-bootstrap"
 import { useHistory } from "react-router-dom"
-import { cancelRecommendEpisode, getEpisode, recommendEpisode } from "../apis/Api"
+import { cancelRecommendEpisode, getEpisode, isRecommendedEpisode, recommendEpisode } from "../apis/EpisodeApi"
 import good2Img from "../img/good2.png"
 import good1Img from "../img/good1.png"
 import { getUserId } from "../utils/AuthUtil"
 import EpisodePurchase from "../components/EpisodePurchase"
+import ReplyBox from "../components/ReplyBox"
+import { ynToBool } from "../apis/mapper"
 
-
-const EpisodePage = ({id}) => {
+const EpisodePage = ({episodeId}) => {
     const history = useHistory()
-    const [loading, setLoading] = useState(true)
+
+    const [recommendationLoading, setRecommendationLoading] = useState(true)
+    const [episodeLoading, setEpisodeLoading] = useState(true)
 
     const [episode, setEpisode] = useState({})
     const [recommendation, setRecommendation] = useState(false)
+    
     const [needPurchase, setNeedPurchase]= useState(false)
+    const [showReplys, setShowReplys] = useState(false)
 
-    useEffect( async () => {
-        try{
-            let response = await getEpisode(id)
-            setEpisode(response.data)
-            setRecommendation(response.data.recommendation)
-            setLoading(false)
-        }catch (error){
-            if(error.response.data.errors){
-                if(error.response.data.errors.filter( e => e.code == "010002") ){
-                    setNeedPurchase(true)
-                    setLoading(false)
-                } else{
-                    alert(error.response.data.errors[0].message)
+    useEffect( () =>{
+    const abc = async () => {
+            try{
+                let response = await getEpisode(episodeId)
+                setEpisode(response.data)
+            
+            }catch (error){
+                try{
+                    if(error.response.data.errors.filter( e => e.code === "010002").length == 1 ){
+                        setNeedPurchase(true)
+
+                    } else if(error.response.data.errors.filter( e => e.code === "010003").length == 1 ){
+                        alert(error.response.data.errors.filter( e => e.code === "010003"))
+                        history.push("/my_info")
+                    }else{
+                        alert(error.response.data.errors[0].message)
+                        history.goBack()
+                    }
+
+                } catch(e){
+                    alert("잠시 후 다시 시도해주세요!")
                     history.goBack()
                 }
-            } else {
-                alert("잠시 후 다시 시도해주세요!")
-                history.goBack()
+            }finally{
+                setEpisodeLoading(false)
             }
         }
-    },[id])
+        abc()
+    },[episodeId])
 
-    const toggleRecommendation = () => {
+    useEffect(() => {
+        const userId = getUserId()
+        const request = async (userId) => {
+            try{
+                let isRecommededEpisodeResponse = await isRecommendedEpisode([episodeId], userId)
+                setRecommendation( ynToBool(isRecommededEpisodeResponse.data[episodeId]) )
+            }catch{}
+        }
+
+        request(userId)
+        setRecommendationLoading(false)
+    }, [episodeId])
+    
+    const toggleRecommendation = async () => {
         const userId = getUserId()
 
         if (!userId){
             alert("로그인이 필요합니다!")
             return
         }
-
-        if(recommendation === "y"){
-            cancelRecommendEpisode(userId, id) 
-            .then( (response) => {
-                setRecommendation("n")
-            })
+        
+        let request = undefined
+        if(recommendation === true){
+            request = () => cancelRecommendEpisode(userId, episodeId) 
+            .then( (response) => {setRecommendation(false)})
         }
         else {
-            recommendEpisode(userId, id)
-            .then( (response) => {
-                setRecommendation("y")
-            })
-         
+            request = () => recommendEpisode(userId, episodeId)
+            .then( (response) => {setRecommendation(true)})
         }
+
+        request()
+        .catch((e) => {
+            alert("잠시 후 다시 시도해주세요")
+        })
     }
 
     const autoRows = (text) => {
@@ -69,9 +96,25 @@ const EpisodePage = ({id}) => {
         return defaultLine + newLine + text.length/104      
     }
 
+    const replys = () => {
+        return  <Offcanvas show={showReplys} onHide={() => setShowReplys(false)} style={{width: "75%" }}>
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title>{`${episode.title} 댓글창`}</Offcanvas.Title>
+                    </Offcanvas.Header>
+
+                    <Offcanvas.Body>
+                        <ReplyBox episodeId = {episodeId} authorId={episode.authorId}/>
+                    </Offcanvas.Body>
+                </Offcanvas>
+    }
+
+    const isLoading = () => {
+        return episodeLoading || recommendationLoading
+    }
+
     return(
-            loading ? <Spinner animation="border"/> : 
-            needPurchase ? <EpisodePurchase id = {id} /> :
+            isLoading() ? <Spinner animation="border" /> : 
+            needPurchase ? <EpisodePurchase id = {episodeId} /> :
             <Container className="justify-content-center mb-5">
                 <Row className='my-5'
                      style = {{
@@ -119,13 +162,15 @@ const EpisodePage = ({id}) => {
 
                 <Row>
                     <Col>
-                        <Image  src = {recommendation === "y" ? good2Img : good1Img}
+                        <Image  src = {recommendation ? good2Img : good1Img}
                                 onClick = { toggleRecommendation }
-                                style={{width : "25px", height : "25px"}} />
+                                style={{width : "35px", height : "35px"}} />
                     </Col>
+
                     <Col>
-                        댓글창 공사중
+                        <p style={{fontSize:"30px", cursor:"Pointer"}} onClick={() => setShowReplys(true)}>댓글창</p>
                     </Col>
+                    {replys()}
                 </Row>
             </Container>
     );

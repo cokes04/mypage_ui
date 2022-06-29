@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { getEpisodeInfoByIds, getNovelsByIds, getPurchaseEpisodeHistorys } from '../apis/Api';
-import { getUserId } from '../utils/AuthUtil';
-import PageButtons from './PageButtons';
+import React, { useEffect, useState } from 'react'
+import { Container, Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { getNovels } from '../apis/NovelApi'
+import {getEpisodeInfoByIds, getEpisodePurchaseHistoryOfUser} from '../apis/EpisodeApi'
+import { getUserId } from '../utils/AuthUtil'
+import PageButtons from './PageButtons'
 
-const UseTicketTap = ({}) => {
+const PurchaseEpisodeTap = ({}) => {
 
     const [purchaseEpisodeHistorys, setPurchaseEpisodeHistorys] = useState([])
     const [episodeMap, setEpisodeMap] = useState(new Map())
@@ -13,13 +14,16 @@ const UseTicketTap = ({}) => {
     const [pageInfo, setPageInfo] = useState({ page : 0,  size : 20,})
     const [totalPage, setTotalPage] = useState(0)
 
-    useEffect( async () => {
-        const userId = getUserId()
-        let response = await getPurchaseEpisodeHistorys(userId, pageInfo);
-        setPurchaseEpisodeHistorys(response.data.historyList)
-        setTotalPage(response.data.totalPage)
-        setEpisodeMapAndNovelMapToResponse(response.data.historyList)
+    useEffect( () => {
+        const reqeust = async (userId) => {
+            let response = await getEpisodePurchaseHistoryOfUser(userId, pageInfo);
+            setPurchaseEpisodeHistorys(response.data.historyList)
+            setTotalPage(response.data.totalPage)
+            setEpisodeMapAndNovelMapToResponse(response.data.historyList)
+        }
 
+        const userId = getUserId()
+        reqeust(userId)
     }, [pageInfo])
 
     const setEpisodeMapAndNovelMapToResponse = async (historyList) => {
@@ -47,7 +51,7 @@ const UseTicketTap = ({}) => {
 
     const setNovelMapToResponse = async (novelIdList) => {
         if(novelIdList.length !== 0){
-            let novelResponse = await getNovelsByIds(novelIdList)
+            let novelResponse = await getNovels(novelIdList)
             let map = new Map();
             
             if (novelResponse.data.novelList){
@@ -113,4 +117,4 @@ const UseTicketTap = ({}) => {
             );
 }
 
-export default UseTicketTap;
+export default PurchaseEpisodeTap;

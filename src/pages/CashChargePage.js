@@ -24,9 +24,12 @@ const CashChargePage = ({...props}) => {
     const [paymentMethod, setPaymentMethod] = useState(paymentMethodList[0])
     const [tid, setTid]  = useState(undefined)
 
-    useEffect( async () => {
-        let response = await getBuyCashKinds()
-        setCashList(response.data.cashKindsList)
+    useEffect( () => {
+        const request = async () => {
+            let response = await getBuyCashKinds()
+            setCashList(response.data.cashKindsList)
+        }
+        request()
     }, [])
 
     const charge = () => {
@@ -36,10 +39,10 @@ const CashChargePage = ({...props}) => {
             return
         }
 
-        paymentMethod.request(cash.cashKindsId, "cash")
+        paymentMethod.request(cash.cashKindsId)
             .then( (response) => {
                 setTid(response.data.tid)
-                window.open( response.data.redirectUrl, "_blank", "channelmode=no,height=600,width=500,", true)
+                window.open( response.data.redirectUrl, "_blank", "channelmode=no,height=600,width=500,", false)
             })
             .catch( (error) => {
                 try{
@@ -108,7 +111,7 @@ const CashChargePage = ({...props}) => {
                         </Col>        
                     </Row>
                     <Row>
-                    <span style={{"color":"#B0B0B0"}}>테스트 결제하기 확인! (실결제 아님)</span>
+                    <span style={{"color":"#B0B0B0"}}>결제창에서 테스트 결제하기 확인해주세요(실결제 아닙니다)</span>
                     </Row>
                     <Form.Control type='text' hidden = {true} id="tid"  value = {tid}/>
                 </Container>

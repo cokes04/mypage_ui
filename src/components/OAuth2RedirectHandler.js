@@ -1,16 +1,19 @@
 import { Redirect } from 'react-router-dom'
+import {ynToBool} from '../apis/mapper'
 
-const OAuth2RedirectHandler = ({authenticate, accessToken, ...props}) => {
-    console.log(accessToken);
-    if (accessToken) {
-        authenticate(accessToken);
+const OAuth2RedirectHandler = ({authenticate, result, code, message, accessToken, ...props}) => {
+    if (ynToBool(result) && accessToken) {
+
+        authenticate(accessToken)
         return <Redirect to={{
             pathname: '/',
         }}/>
-    } else 
+    } else {
+
+        alert(message)
         return <Redirect to={{
             pathname: '/login',
         }}/>
-
+    }
 } 
 export default OAuth2RedirectHandler;

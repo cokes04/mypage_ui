@@ -1,3 +1,4 @@
-export const OAUTH2_REDIRECT_URI = 'http://localhost:8200/oauth2/callback/google';
+export const OAUTH2_REDIRECT_URI = `/api/oauth2/callback/google`;
 
-export const GOOGLE_AUTH_URL = 'http://localhost:8200' + '/oauth2/authorze/google?redirect_uri=' + OAUTH2_REDIRECT_URI;
+export const GOOGLE_AUTH_URL = `/api/oauth2/authorize/google?redirect_uri=${OAUTH2_REDIRECT_URI}`
+

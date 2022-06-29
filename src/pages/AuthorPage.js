@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Image, Form, InputGroup, FormControl, Spinner } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { getAuthor, getNovelsOfAuthor } from '../apis/Api'
+import { getAuthor } from '../apis/Api'
+import { getNovelsOfAuthor } from '../apis/NovelApi'
 import TmpImg from '../img/tmp.png'
 
 const AuthorPage = ({id}) => {

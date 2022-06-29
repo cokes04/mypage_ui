@@ -7,11 +7,11 @@ export function getUser(userId){
     );
 }
 
-export function getUserInfo(userId){
-    return authInstance.get(
-        '/api/users/' + userId + '/info',
-    );
+export function getReaders(readerIds){
+    return authInstance.get(`/api/readers/${readerIds.join(',')}`);
 }
+
+// POST PUT PATCH DELETE
 
 export function join(user){
     return nonAuthInstance.post(
@@ -21,29 +21,48 @@ export function join(user){
         });
 }
 
-export function changeUserInfo(userId, newInfo){
+export function verifyEmailRequest(userId){
+    return authInstance.post(
+        `/api/users/${userId}/email/verify`);
+}
+
+
+export function verifyAdult(userId){
     return authInstance.put(
-        '/api/users/' + userId, {
-            name : newInfo.name,
-            gender : newInfo.gender,
-            introduction : newInfo.aboutReader,
-            openInfo : newInfo.openInfo,
+        `/api/users/${userId}/adult/y`);
+}
+
+export function changeReaderInfo(userId, newReaderInfo){
+    return authInstance.put(
+        `/api/users/${userId}/reader`, {
+            readerName : newReaderInfo.readerName,
+            gender : newReaderInfo.gender,
+            aboutReader : newReaderInfo.aboutReader,
+            openReaderInfo : newReaderInfo.openReaderInfo,
+        }
+    );
+}
+
+export function changeAuthorInfo(authorId, newInfo){
+    return authInstance.put(`/api/users/${authorId}/author`, {
+        authorName : newInfo.authorName,
+        aboutAuthor : newInfo.aboutAuthor,
         }
     );
 }
 
 export function changePassword(userId, oldPassword, newPassword){
     return authInstance.put(
-        '/api/users/' + userId + '/password', {
+        `/api/users/${userId}/password`, {
             oldPassword : oldPassword,
             newPassword : newPassword,
         }
     );
 }
 
-export function resetPassword(resetKey, newPassword){
+export function resetPassword(userId, resetKey, newPassword){
     return nonAuthInstance.put(
-        '/api/users/password/reset', {
+        `/api/users/${userId}/password/reset`, {
             passwordResetKey : resetKey,
             newPassword : newPassword,
         }
@@ -59,7 +78,5 @@ export function resetPasswordRequest(email){
 }
 
 export function withdraw(userId){
-    return authInstance.delete(
-        '/api/users/' + userId,
-    );
+    return authInstance.delete(`/api/users/${userId}`);
 }

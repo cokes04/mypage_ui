@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import NovelInfo from '../components/NovelInfo';
 import PageButtons from '../components/PageButtons';
-import { getNovelsOfUser } from '../apis/Api';
+import { getNovelsOfAuthor } from '../apis/NovelApi';
 import { getUserId } from '../utils/AuthUtil';
 import { Col, Container, Row, Spinner } from 'react-bootstrap';
 
@@ -18,14 +18,17 @@ const MyCreationPage = ({...props}) => {
     const [totalCount, setTotalCount] = useState(0)
     const [totalPage, setTotalPage] = useState(0)
 
-    useEffect( async () =>{
-        let novelResponse = await getNovelsOfUser(getUserId(), pageInfo)
+    useEffect( () =>{
+        const request = async (userId, pageInfo) => {
+            let novelResponse = await getNovelsOfAuthor(userId, pageInfo)
 
-        setTotalCount(novelResponse.data.totalCount)
-        setTotalPage(novelResponse.data.totalPage)
-        setNovelList(novelResponse.data.novelList)
-        setLoading(false)
-
+            setTotalCount(novelResponse.data.totalCount)
+            setTotalPage(novelResponse.data.totalPage)
+            setNovelList(novelResponse.data.novelList)
+            setLoading(false)
+        }
+        const userId = getUserId()
+        request(userId, pageInfo)
     }, [pageInfo]); 
 
 
@@ -55,9 +58,17 @@ const MyCreationPage = ({...props}) => {
         <Container>
             
             <Row className='m-4 justify-content-center'>
-                <Link to = '/my_creation/register'  style={{fontSize : "50px"}}>
-                    작품 등록
-                </Link>  
+                <Col>
+                    <Link to = '/my_creation/register'  style={{fontSize : "50px"}}>
+                        작품 등록
+                    </Link>  
+                </Col>
+                <Col>
+                    <Link to = '/my_creation/settlement'  style={{fontSize : "50px"}}>
+                        정산관리
+                    </Link> 
+                </Col>
+                 
             </Row>
 
             {totalCount === 0 ? <p>등록된 작품이 없습니다.</p> : novelInfos()}

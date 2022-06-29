@@ -12,6 +12,12 @@ const NovelGenreMenu = ({url}) => {
                             to : '/romance',},
                         {name : '무협',
                             to : '/martial_arts', },
+                        {name : '현대판타지',
+                            to : '/contemporary_fantasy',},
+                        {name : '스포츠',
+                            to : '/sports',},
+                        {name : 'SF',
+                            to : '/sf', },
                     ]
 
     const menuItems = menuList.map( (menu, index) => <Col className ={style["novel-genre-menu-item"]} key={index}>

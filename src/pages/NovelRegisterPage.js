@@ -1,15 +1,17 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import NovelForm from '../components/NovelForm';
-import { writeNovel } from '../apis/Api';
+import { writeNovel } from '../apis/NovelApi';
 import { Container } from 'react-bootstrap';
+import { getUserId } from '../utils/AuthUtil';
 
 const NovelRegisterPage = () => {
 
     const history = useHistory();
     
     const register = (novel) => {
-        writeNovel(novel)
+        const userId = getUserId()
+        writeNovel(userId, novel)
         .then( (response) => {
             history.push('/my_creation')
         })

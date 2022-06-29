@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Container, Row, Button, Spinner } from 'react-bootstrap'
-import { getAuthor, getEpisodeInfo, getNovel, purchaseEpisode } from '../apis/Api'
+import { getAuthor } from '../apis/Api'
+import { getNovel } from '../apis/NovelApi'
+import { getEpisodeInfo } from '../apis/EpisodeApi'
 import { getUserId } from '../utils/AuthUtil'
 import EpisodeInfo from './EpisodeInfo'
 import NovelInfo from './NovelInfo'
 import { Link } from 'react-router-dom'
 import {getAccessToken} from '../utils/AuthUtil'
+import { ynToBool } from '../apis/mapper'
+import { spendTicket } from '../apis/TicketApi'
 
 const EpisodePurchase = ({id}) => {
     const [loading, setLoading] = useState(true)
@@ -14,32 +18,49 @@ const EpisodePurchase = ({id}) => {
     const [episode, setEpisode] = useState({})
     const [author, setAuthor] = useState({})
 
-    useEffect( async () => {
-        try{
-            const episodeResponse = await getEpisodeInfo(id)
-            const novelResponse = await getNovel(episodeResponse.data.novelId)
-            const authorResponse = await getAuthor(novelResponse.data.authorId)
-
-            episodeResponse.data.adult = episodeResponse.data.adult === "y" ? true : false;
-            episodeResponse.data.free = episodeResponse.data.free === "y" ? true : false
-            episodeResponse.data.hidden = episodeResponse.data.hidden === "y" ? true : false
- 
-            setEpisode(episodeResponse.data)
-            setNovel(novelResponse.data)
-            setAuthor(authorResponse.data)
-            setLoading(false)
-        }catch (error){
-
+    useEffect( () => {
+        const episodeInfoRequest = async (episodeId) => {
+            try{
+                const episodeInfoResponse = await getEpisodeInfo(episodeId)
+                episodeInfoResponse.data.adult = ynToBool(episodeInfoResponse.data.adult)
+                episodeInfoResponse.data.free = ynToBool(episodeInfoResponse.data.free)
+                episodeInfoResponse.data.hidden = ynToBool(episodeInfoResponse.data.hidden)
+                setEpisode(episodeInfoResponse.data)
+                return episodeInfoResponse.data
+            }catch (error){}
         }
-        
+        const novelRequest = async (novelId) => {
+            try{
+                const novelResponse = await getNovel(novelId)
+                setNovel(novelResponse.data)
+                return novelResponse
+            }catch (error){}
+         }
 
+        const authorReqeust = async (authorId) => {
+            try{
+                const authorResponse = await getAuthor(authorId)
+                setAuthor(authorResponse.data)
+                return authorResponse
+            }catch (error){}
+         }
+        
+        const request = async (episodeId) => { 
+            const episodeInfoResponse = await episodeInfoRequest(episodeId)
+            await novelRequest(episodeInfoResponse.novelId)
+            await authorReqeust(episodeInfoResponse.authorId)
+            setLoading(false)
+         }
+
+        request(id)
+        
     }, [])
 
     const purchase = async () => {
-        try{
-            const response = await purchaseEpisode(id, getUserId(), "TP")
+        const userId = getUserId()
 
-            console.log(response)
+        try{
+            const response = await spendTicket(userId, id, "TP")
             window.location.reload()
 
         }catch (error){
@@ -81,7 +102,7 @@ const EpisodePurchase = ({id}) => {
 
                         <Col md={3}>
                             <Button type='button'>
-                                <Link to = {`/ticket/charge?novelId=${novel.novelId}`} style={{color : "#FFFFFF"}}> 이용권 충전 </Link>
+                                <Link to = {`/ticket/charge?novelId=${novel.novelId}&episodeId=${id}`} style={{color : "#FFFFFF"}}> 이용권 충전 </Link>
                             </Button>
                         </Col>
                     </Row>

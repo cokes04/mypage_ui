@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Container, Spinner, Tab, Tabs } from 'react-bootstrap'
 import ChargeCashTap from '../components/ChargeCashTap'
 import ChargeTicketTap from '../components/ChargeTicketTap'
-import UseTicketTap from '../components/UseTicketTap'
+import PurchaseEpisodeTap from '../components/PurchaseEpisodeTap'
 
 const UsageHistoryPage = ({}) => {
     const [loading, setLoading] = useState(false)
@@ -20,8 +20,8 @@ const UsageHistoryPage = ({}) => {
                         <Tab eventKey="chargeTicket" title="이용권 구매 내역">
                             {key === "chargeTicket" ? <ChargeTicketTap /> : <></>}
                         </Tab>
-                        <Tab eventKey="useTikcet" title="이용권 사용 내역">
-                            {key === "useTikcet" ? <UseTicketTap /> : <></>}
+                        <Tab eventKey="useTikcet" title="작품 구매 내역">
+                            {key === "useTikcet" ? <PurchaseEpisodeTap /> : <></>}
                         </Tab>
                     </Tabs>
                 </Container>

@@ -13,7 +13,9 @@ const AppHeader = ({authenticated, unAuthenticate, ...props} ) => {
     const [expiresImminentCashAmount, setExpiresImminentCashAmount] = useState(0)
 
     useEffect( () => {
-        getUserCash()
+        const userId = getUserId()
+        if (userId)
+            getUserCash()
     }, [])
 
     const onLogout = () => {

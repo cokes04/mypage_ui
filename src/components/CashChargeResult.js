@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
+import { paymentMethodInfo } from '../apis/mapper';
 
 
 const CashChargeResult = ({payReuslt, payCashKinds}) => {
@@ -7,15 +8,12 @@ const CashChargeResult = ({payReuslt, payCashKinds}) => {
     useEffect( () => {
         console.log(payReuslt, payCashKinds)
     })
-    const renderPaymentMethod = () => {
-        if(payReuslt.paymentMethodName === "KakaoPay")
-            return "카카오페이"
-    }
+
     const close = () => {
         window.close()
     }
-    //className='justify-content-center'
-    return (payCashKinds == 0 ?
+
+    return (payCashKinds === 0 ?
             <Container className='justify-content-center'> 결제 실패</Container> :
     
             <Container className='border rounded-3'>
@@ -26,28 +24,29 @@ const CashChargeResult = ({payReuslt, payCashKinds}) => {
                 <Row className='my-2'>
                         <Col>
                             <Row className='justify-content-center'>충전 캐시</Row>
-                            <Row className='justify-content-center'>{payCashKinds.pay || 0}</Row>
+                            <Row className='justify-content-center'>{payCashKinds.pay}</Row>
                         </Col>
                         <Col>
                             <Row className='justify-content-center'>추가 캐시</Row>
-                            <Row className='justify-content-center'>{payCashKinds.free || 0}</Row>
+                            <Row className='justify-content-center'>{payCashKinds.free}</Row>
                         </Col>
                         <Col>
                             <Row className='justify-content-center'>최종 캐시</Row>
-                            <Row className='justify-content-center'>{(payCashKinds.free + payCashKinds.pay * 100000) || 0}</Row>
+                            <Row className='justify-content-center'>{payCashKinds.free + payCashKinds.pay}</Row>
                         </Col>
                  </Row>
 
                 <Row className='justify-content-center'>
-                    결제 수단 {renderPaymentMethod()}
+                    결제 수단 {paymentMethodInfo.get(payReuslt.paymentMethod)}
                 </Row>
                 <Row className='justify-content-center'>
-                    결제 금액 {payReuslt.totalPayout}
+                    결제 금액 {payReuslt.payout}
                 </Row>
                 <Row>
                     <Button type='button' onClick={close}>창 닫기</Button>
                 </Row>
-            </Container>);
+            </Container>
+            );
 }
 
 export default CashChargeResult;

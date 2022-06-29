@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { getUser, changeUserInfo, withdraw } from '../apis/UserApi';
+import { getUser, changeReaderInfo, withdraw, verifyEmailRequest, verifyAdult } from '../apis/UserApi';
 import { getUserId } from '../utils/AuthUtil';
-import { Button, Col, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
 import { logout } from '../apis/AuthApi';
-import { changeAuthorInfo } from '../apis/Api';
+import { changeAuthorInfo } from '../apis/UserApi';
 
 const MyInfoPage = ({unAuthenticate, ...props}) => {
     
@@ -13,6 +13,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
 
     const [userId, setUserId] = useState(0)
     const [email, setEmail] = useState("")
+
     const [name, setName] = useState("")
     const [aboutReader, setAboutReader] = useState("")
     const [gender, setGender] = useState("male")
@@ -22,7 +23,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
     const [penName, setPenName] = useState("")
     const [aboutAuthor, setAboutAuthor] = useState("")
 
-    const [certificationStatus, setCertificationStatus] = useState(false)
+    const [verificationStatus, setVerificationStatus] = useState(false)
 
     const max_name_length = 20
 
@@ -34,16 +35,19 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             .then( (response) => {
                 setUserId(response.data.userId)
                 setEmail(response.data.email)
-                setName(response.data.readerName)
-                setAboutReader(response.data.aboutReader)
-                setGender(response.data.gender)
                 setAdult(response.data.adultConfirm === "y" ? true : false)
-                setOpenInfo(response.data.openReaderInfo)
 
-                setPenName(response.data.authorName)
-                setAboutAuthor(response.data.aboutAuthor)
+                const readerInfo = response.data.readerInfo
+                setName(readerInfo.readerName)
+                setAboutReader(readerInfo.aboutReader)
+                setGender(readerInfo.gender)
+                setOpenInfo(readerInfo.openReaderInfo)
 
-                setCertificationStatus(response.data.certificationStatus === "y" ? true : false)
+                const authorInfo = response.data.authorInfo
+                setPenName(authorInfo.authorName)
+                setAboutAuthor(authorInfo.aboutAuthor)
+
+                setVerificationStatus(response.data.verify === "y" ? true : false)
                 setLoading(false)
             })
             .catch ( (error) => {
@@ -52,7 +56,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             });
     
 
-    },[]);
+    }, []);
 
     const withdrawal = () => {
         let go = window.confirm("회원 탈퇴를 진행하시겠습니까?")
@@ -80,32 +84,61 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             })
     }
 
-    const certifyEmail = () => {
+    const verifyEmail = () => {
+        const request = async (userId) => {
+            try{
+                const response = await verifyEmailRequest(userId);
+                alert("이메일 인증이 완료되었습니다\n잠시 후 새로고침 해주세요")
 
+            }catch (error){
+                try{
+                    alert(error.response.data.errors[0].message)
+                } catch(e){
+                    alert("잠시 후 다시 시도해주세요!")
+                }
+            }
+        }
+
+        const userId = getUserId()
+        request(userId)
     }
+    
     const certifyAdult = () => {
+        const request = async (userId) => {
+            try{
+                const response = await verifyAdult(userId);
+                alert("성인 인증이 완료되었습니다!")
+
+            }catch (error){
+                try{
+                    alert(error.response.data.errors[0].message)
+                } catch(e){
+                    alert("잠시 후 다시 시도해주세요!")
+                }
+            }
+        }
+
         let go = window.confirm("성인 인증을 진행하시겠습니까?")
 
         if(go)
             go = window.confirm("성인입니까?")
-        if(go)
-            go = window.confirm("진짜로?")
-        if(go)
-            go = window.confirm("정말 성인입니까?")
-        if(go)
-            alert("성인 인증 기능이 구현되지 않았습니다.")
+        if(go){
+            const userId = getUserId()
+            request(userId)
+        }
+            
     }
 
     const modifyReader = () => {
         const userId = getUserId()
-        const newInfo = {
-            name : name,
+        const newReaderInfo = {
+            readerName : name,
             gender : gender,
             aboutReader : aboutReader,
-            openInfo : openInfo,
+            openReaderInfo : openInfo,
          }
 
-         changeUserInfo(userId, newInfo)
+         changeReaderInfo(userId, newReaderInfo)
             .then( (response) => {
                 alert("프로필 변경 성공")
             })
@@ -120,12 +153,12 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
 
     const modifyAuthor = async () =>{
         const authorId = getUserId()
-        const newInfo = {
-            name : penName,
+        const newAuthorInfo = {
+            authorName : penName,
             aboutAuthor : aboutAuthor,
          }
 
-        changeAuthorInfo(authorId, newInfo)
+        changeAuthorInfo(authorId, newAuthorInfo)
         .then(r => {
             alert("작가 정보 변경 성공")
         } )
@@ -150,8 +183,8 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             <InputGroup>
                 <InputGroup.Text>이메일</InputGroup.Text>
                 <FormControl disabled value={email}/>
-                {certificationStatus ? <InputGroup.Text>인증 완료</InputGroup.Text> : 
-                    <Button onClick={certifyEmail}>이메일 인증</Button>
+                {verificationStatus ? <InputGroup.Text>인증 완료</InputGroup.Text> : 
+                    <Button onClick={verifyEmail}>이메일 인증</Button>
                 }
             </InputGroup>
             <InputGroup>

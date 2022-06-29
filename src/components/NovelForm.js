@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Row,Col, InputGroup, FormControl } from 'react-bootstrap';
+import { genreInfo } from '../apis/mapper';
 
 const NovelForm = ({novel, onsubmit, submitBtnName}) => {
 
@@ -7,7 +8,6 @@ const NovelForm = ({novel, onsubmit, submitBtnName}) => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState("publish")
-    const [exclusive, setExclusive] = useState("n")
     const [ageGrade, setAgeGrade] = useState(-1)
     const [serialCycles, setSerialCycles] = useState([])
     const [genres, setGenres] = useState([])
@@ -17,16 +17,12 @@ const NovelForm = ({novel, onsubmit, submitBtnName}) => {
     const max_title_length = 30;
     const max_description_length = 1000;  
 
-
-    //useEffect(() => {console.log(id,title,description,exclusive,hidden,ageGrade,serialCycles,genres)})
-    
     useEffect( () => {
         if(!novel) return
         setId(novel.novelId)
         setTitle(novel.title)
         setDescription(novel.description)
         setStatus(novel.status)
-        setExclusive(novel.exclusive)
         setAgeGrade(novel.ageGrade)
         setSerialCycles(novel.serialCycles)
         setGenres(novel.genres)
@@ -39,7 +35,6 @@ const NovelForm = ({novel, onsubmit, submitBtnName}) => {
             title : title,
             description : description,
             status : status,
-            exclusive : exclusive,
             ageGrade : ageGrade,
             genres : genres,
             serialCycles : serialCycles,
@@ -87,14 +82,6 @@ const NovelForm = ({novel, onsubmit, submitBtnName}) => {
             </InputGroup>
 
             <Row className='m-2'>
-                <Col>
-                    <Form.Label >독점 여부</Form.Label>
-                    <Form.Select value = {exclusive}  onChange = { e => setExclusive(e.target.value)}  disabled >
-                        <option value="y">독점</option>
-                        <option value="n">비독점</option>
-                    </Form.Select>
-
-                </Col>
                 <Col>
                     <Form.Label>공개 여부</Form.Label>
                     <Form.Select value = {status}  onChange = { e => setStatus(e.target.value)}  
@@ -144,14 +131,9 @@ const NovelForm = ({novel, onsubmit, submitBtnName}) => {
                 
                 <Col>
                     <Form.Label className='pe-4'>장르</Form.Label>
-                    {[
-                        {text : '판타지', value : 'fantasy'},
-                        {text : '무협', value : 'martial_arts'},
-                        {text : '로맨스', value : 'romance'},
-                        {text : '현대 판타지', value : 'contemporary_fantasy'},
-                        {text : '스포츠', value : '스포츠'},
-                        {text : 'SF', value : 'sf'},
-                    ].map((item, index) =>  <Form.Check inline type='checkbox' key={index}>
+                    {
+                        Array.from(genreInfo, ([value, kor]) => ({ value : value, text : kor }))
+                        .map((item, index) =>  <Form.Check inline type='checkbox' key={index}>
                                                 <Form.Check.Input   type='checkbox'
                                                                     checked = {genres.includes(item.value) ? true : false}
                                                                     onChange = {(e) => changeGenres((item.value))}  />

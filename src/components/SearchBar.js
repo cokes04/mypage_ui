@@ -35,7 +35,7 @@ const SearchBar = () => {
             <Form.Control className="form-control"
                     required 
                     type="search" 
-                    placeholder="검색"
+                    placeholder="제목 검색"
                     value={keyword}
                     onChange={e => setKeyword(e.target.value)}
                     onKeyPress={e => enterPressEvent(e)} />

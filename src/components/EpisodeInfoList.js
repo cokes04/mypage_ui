@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { getEpisodeInfosInOfNovel } from '../apis/Api';
+import { getEpisodeInfosOfNovel, isReadEpisodeOfNovel } from '../apis/EpisodeApi';
 import EpisodeInfo from './EpisodeInfo';
 import PageButtons from './PageButtons';
-import style from '../css/components/EpisodeInfoList.module.css';
 import {Container, Row, InputGroup, ListGroup, Form, Col} from 'react-bootstrap';
+import { getUserId } from '../utils/AuthUtil';
+import { ynToBool } from '../apis/mapper';
 
 const EpisodeInfoList = ({novelId, ...props}) => {
-
-    const history = useHistory()
     const [printNotification, setPrintNotification] = useState(true)
     const [notificationList, setNotificationList] = useState([])
     const [episodeList, setEpisodeList] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [totalPage, setTotalPage] = useState(0)
+
+    const [readMap, setReadMap] = useState(new Map())
 
     const [pageInfo, setPageInfo] = useState({ 
         page : 0,
@@ -22,49 +23,56 @@ const EpisodeInfoList = ({novelId, ...props}) => {
      })
 
     useEffect( () => {
-        getEpisodeInfoList()
+        const userId = getUserId()
+
+        const getEpisode = async (novelId, pageInfo) => {
+            try{
+                let response = await getEpisodeInfosOfNovel(novelId, pageInfo)
+                let itemList = response.data.episodeList
+                    
+                let notificationList = []
+                let episodeList = []
+    
+                itemList.map( (item) => {
+                    item.adult = ynToBool(item.adult)
+                    item.free = ynToBool(item.free)
+                    item.open = ynToBool(item.open)
+                })
+    
+                for(let item of itemList){
+                    if(item.category === "notice") notificationList.push(item)
+                    else episodeList.push(item)
+                }
+                    
+                setNotificationList(notificationList)
+                setEpisodeList(episodeList)
+                setTotalCount(response.data.totalCount)
+                setTotalPage(response.data.totalPage)
+    
+            }catch (error){}
+        }
+
+        const getsReadEpisodeOfNovel = async (novelId, userId) => {
+            try{
+                let response = await isReadEpisodeOfNovel(novelId, userId)
+                response = Object.entries(response.data).map(([k, v]) => [ Number(k), ynToBool(v) ])
+                setReadMap(new Map(response))
+
+            }catch(err){}
+        }
+
+        getEpisode(novelId, pageInfo)
+        getsReadEpisodeOfNovel(novelId, userId)
     }, [novelId, pageInfo])
 
     const togglePrintNotification = () => {
         setPrintNotification(!printNotification)
     }
-
-     const getEpisodeInfoList = () => {
-        getEpisodeInfosInOfNovel(novelId, pageInfo)
-            .then( (response) => {
-
-                let itemList = response.data.episodeList
-                
-                let notificationList = []
-                let episodeList = []
-
-                itemList.map( (item) => {
-                    item.adult = item.adult === "y" ? true : false;
-                    item.free = item.free === "y" ? true : false
-                    item.hidden = item.hidden === "y" ? true : false
-                })
-
-                for(let item of itemList){
-                    if(item.category === "notice")
-                        notificationList.push(item)
-                    else
-                        episodeList.push(item)
-                }
-                setNotificationList(notificationList)
-                setEpisodeList(episodeList)
-                setTotalCount(response.data.totalCount)
-                setTotalPage(response.data.totalPage)
-            })
-            .catch( (error) => {
-
-            });
-    }
-
+    
     const renderNotificationList = () => {
         if(!printNotification) return <></>
         
         const create_date_asc = (a, b) => { 
-            console.log(new Date(a.createdDate), new Date(b.createdDate), new Date(a.createdDate) < new Date(b.createdDate))
             return new Date(a.createdDate) < new Date(b.createdDate)
         }
 
@@ -78,7 +86,7 @@ const EpisodeInfoList = ({novelId, ...props}) => {
     const renderEpisodeInfoList = () => {
         return  <ListGroup as="ul">{ 
                         episodeList.map( (item, index) =><ListGroup.Item key = {index} as='li' className='p-1 px-4'>
-                                                            <EpisodeInfo episodeInfo = {item}/>
+                                                            <EpisodeInfo episodeInfo = {item} isRead = {readMap.get(item.episodeId)}/>
                                                          </ListGroup.Item>)
                 }</ListGroup>
     }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { writeEpisode, getNovel } from '../apis/Api'
+import { writeEpisode } from '../apis/EpisodeApi'
+import { getNovel } from '../apis/NovelApi'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useHistory } from 'react-router-dom'
 import EpisodeForm from '../components/EpisodeForm'
@@ -29,7 +30,8 @@ const EpisodeRegisterPage = ({novelId}) => {
     },[novelId])
 
     const register = (episode) => {
-        writeEpisode(novelId, episode)
+        const authorId = getUserId()
+        writeEpisode(novelId, authorId, episode)
             .then( (response) => {
                 history.push("/novel/" + novelId)
             })

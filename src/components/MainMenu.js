@@ -5,8 +5,6 @@ import style from '../css/components/MainMenu.module.css';
 const MainMenu = ( ) => {
 
     const menuList = [
-        {   name : '베스트',
-            to : '/best',},
         {   name : '유료연재',
             to : '/paynovel',},
         {   name : '무료연재',
@@ -15,13 +13,15 @@ const MainMenu = ( ) => {
             to : '/mynovel',},
     ]
 
-    const menuItems = menuList.map( (menu, index) => <Col className ={style["main-menu-item"]} key={index}>
+    const menuItems = () => { 
+        return menuList.map( (menu, index) => <Col className ={style["main-menu-item"]} key={index}>
                                                 <Link to = {menu.to} >{menu.name}</Link>
                                             </Col>)
+                            }
 
     return (
         <Container className={style["main-menu"]}>
-            {menuItems}
+            {menuItems()}
         </Container>
     );
 

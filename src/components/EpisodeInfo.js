@@ -2,27 +2,26 @@ import nineteenImg from "../img/nineteen.png"
 import { Col, Row, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getUserId } from "../utils/AuthUtil";
+import { useEffect } from "react";
+import { episodeCategoryInfo } from "../apis/mapper";
 
-const EpisodeInfo = ({episodeInfo}) => {
+const EpisodeInfo = ({episodeInfo, isRead}) => {
     let today =  new Date()
     
     const renderCategory = () => {
         const category = episodeInfo.category
-        if(category === "episode")
-            return "에피소드"
-        else if (category === "notice")
-            return "공지사항"
-        else if(category === "prologue")
-            return "프롤로그"
-        else if(category === "epilogue")
-            return "에필로그"
+        return episodeCategoryInfo.get(category);
     }
+    
     const renderOpenDate = () => {
+        if(episodeInfo.open)
+            return <span>{episodeInfo.lastOpenDate ? episodeInfo.lastOpenDate.substring(0, 10) : "-"}</span>
+         
         if (episodeInfo.openLevel === "open"){
-            let time = new Date(episodeInfo.openDate) - today
+            let time = new Date(episodeInfo.lastOpenDate) - today
 
             if (time < 0 )
-                return <span>{episodeInfo.openDate ? episodeInfo.openDate.substring(0, 10) : "-"}</span>
+                return <span>{episodeInfo.lastOpenDate ? episodeInfo.lastOpenDate.substring(0, 10) : "-"}</span>
             else 
                 return <span>{getRemainsTime(time)} 후 공개</span>
         }
@@ -54,7 +53,7 @@ const EpisodeInfo = ({episodeInfo}) => {
     return (
         <Link to = {`/episode/${episodeInfo.episodeId}`}>
         <Row className="align-items-center">
-            <Col md={isAuthorUser() ? 8 : 10} >
+            <Col md={8} >
                 <Row className = "text-start align-items-center">
                     <Col md="auto" style = {{fontSize:"11px"}}>{renderCategory()} </Col>
                     <Col md={1} >
@@ -77,11 +76,16 @@ const EpisodeInfo = ({episodeInfo}) => {
                 <Col md={2} className="text-end">
                     <Link to={`/my_creation/novel/${episodeInfo.novelId}/episode/${episodeInfo.episodeId}/modify`}>수정</Link>
                 </Col>
-                : <></>
+                : 
+                isRead ?
+                <Col md={2} className="text-end">
+                    읽음
+                </Col>
+                :
+                <></>
             }
             
-
-            <Col md={2} className="text-end">{renderOpenDate()}</Col>
+            <Col md={isAuthorUser() || isRead ? 2 : 4} className="text-end">{renderOpenDate()}</Col>
         </Row>
         </Link>
     )

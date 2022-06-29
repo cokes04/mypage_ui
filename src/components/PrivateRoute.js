@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { logout } from '../apis/AuthApi';
 import { isExistRefreshToken } from '../utils/AuthUtil';
 
 function PrivateRoute ({authenticated, render, ...rest }) {
     
     const reject = () => {
-        window.location.replace("/")
+        alert("로그인이 필요한 페이지입니다.")
+        window.location.replace("/sign")
     }
     return (
         <Route
@@ -14,13 +14,7 @@ function PrivateRoute ({authenticated, render, ...rest }) {
             render = { props => 
                 isExistRefreshToken() ? 
                         render(props)
-                    :
-                    <>{
-                        reject()
-                    }</>
-
-         
-                
+                    :   <>{ reject()}</>         
             }
         />
     )
