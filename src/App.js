@@ -6,7 +6,6 @@ import AppHeader from './components/AppHeader';
 import SignPage from './pages/SignPage';
 import OAuth2RedirectHandler from './components/OAuth2RedirectHandler';
 import EmailJoinPage from './pages/EmailJoinPage';
-import NoticePage from './pages/NoticePage';
 import MyNovelPage from './pages/MyNovelPage';
 import NovelListPage from './pages/NovelListPage';
 import NovelPage from './pages/NovelPage';
