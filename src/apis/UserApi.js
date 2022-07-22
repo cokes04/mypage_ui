@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {authInstance, nonAuthInstance} from './AuthApi';
+import { boolToYn } from './mapper';
 
 export function getUser(userId){
     return authInstance.get(
@@ -21,15 +22,27 @@ export function join(user){
         });
 }
 
-export function verifyEmailRequest(userId){
+export function verifyEmailRequest(userId, freepass){
     return authInstance.post(
-        `/api/users/${userId}/email/verify`);
+        `/api/users/${userId}/email/verify`, undefined, {
+            params:{
+                freePass : boolToYn(freepass),
+            }
+        });
 }
 
+export function verifyEmail(userId, verifyKey){
+    return authInstance.put(
+        `/api/users/${userId}/email/verify`, undefined, {
+            params:{
+                key : verifyKey,
+            }
+        });
+}
 
 export function verifyAdult(userId){
     return authInstance.put(
-        `/api/users/${userId}/adult/y`);
+        `/api/users/${userId}/adult`);
 }
 
 export function changeReaderInfo(userId, newReaderInfo){

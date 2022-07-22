@@ -10,7 +10,7 @@ const SignPage = ( {authenticate, ...props} ) => {
     const [password, setPassword] = useState('')
     const [printMessage, setPrintMessage] = useState(false)
 
-    const errorMessage = "이메일, 비밀번호를 다시 확인하고 시도하여주세요. 비밀번호는 대문자, 소문자, 숫자, 특수문자 각 1개 이상씩 입력하여 주세요."
+    const errorMessage = "이메일, 비밀번호를 다시 확인하고 시도하여주세요. 비밀번호는 대문자, 소문자, 숫자, 특수문자 각 1자 이상씩 입력하여 주세요."
     const max_email_length = 40
     const max_password_length = 20
 
@@ -25,54 +25,8 @@ const SignPage = ( {authenticate, ...props} ) => {
         })
     };
 
-    const tmpLogin1 = () => {
-        login("tmp1111@mypage.com", "TMPtmp111@@")
-        .then(response => {
-            authenticate(response.data.accessToken)
-            window.location.replace("/")
-        })
-        .catch( error => {
-            setPassword('')
-            setPrintMessage(true)
-        })
-    }
-    
-    const tmpLogin2 = () => {
-        login("tmp2222@mypage.com", "TMPtmp222@@")
-        .then(response => {
-            authenticate(response.data.accessToken)
-            window.location.replace("/")
-        })
-        .catch( error => {
-            setPassword('')
-            setPrintMessage(true)
-        })
-    }
-
-    const tmpLogin3 = () => {
-        login("tmp3333@mypage.com", "TMPtmp333@@")
-        .then(response => {
-            authenticate(response.data.accessToken)
-            window.location.replace("/")
-        })
-        .catch( error => {
-            setPassword('')
-            setPrintMessage(true)
-        })
-    }
-
     return (
         <Container>
-            <button onClick={ () => tmpLogin1()}>
-                 임시로그인1
-            </button>
-            <button onClick={ () => tmpLogin2()}>
-                 임시로그인2
-            </button>
-            <button onClick={ () => tmpLogin3()}>
-                 임시로그인3
-            </button>
-
             <Form>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Control 

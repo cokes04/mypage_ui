@@ -58,29 +58,57 @@ export function isFavoriteNovel(novelIds, userId){
 // POST PUT PATCH DELETE
 
 export function writeNovel(authorId, novel){
-    return authInstance.post('/api/novels', {
-                    authorId : authorId,
-                    title : novel.title,
-                    description : novel.description,
-                    ageGrade : novel.ageGrade,
-                    genres : novel.genres,
-                    serialCycles : novel.serialCycles,
-                    status : novel.status,       
-                }
+    const body = {
+        authorId : authorId,
+        title : novel.title,
+        description : novel.description,
+        ageGrade : novel.ageGrade,
+        genres : novel.genres,
+        serialCycles : novel.serialCycles,
+        status : novel.status,       
+    }
+
+    let form_data = new FormData()
+    if (novel.thumbnail)
+        form_data.append("thumbnail", novel.thumbnail)
+    form_data.append("body", new Blob([JSON.stringify(body)], { type: "application/json" }));
+
+    return authInstance.post(
+        '/api/novels',
+         form_data,
+         {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                },
+        },
     );
 }
 
 export function modifyNovel(novelId, novel){
-        return authInstance.put(`/api/novels/${novelId}`, {
-                    title : novel.title,
-                    description : novel.description,
-                    ageGrade : novel.ageGrade,
-                    genres : novel.genres,
-                    serialCycles : novel.serialCycles,
-                    status : novel.status,       
-                    finish : novel.finish,
-                }
-        );
+    const body = {
+        title : novel.title,
+        description : novel.description,
+        ageGrade : novel.ageGrade,
+        genres : novel.genres,
+        serialCycles : novel.serialCycles,
+        status : novel.status,       
+        finish : novel.finish,    
+    }
+
+    let form_data = new FormData()
+    if (novel.thumbnail)
+        form_data.append("thumbnail", novel.thumbnail)
+    form_data.append("body", new Blob([JSON.stringify(body)], { type: "application/json" }));
+
+    return authInstance.put(
+        `/api/novels/${novelId}`,
+            form_data,
+            {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                },
+        },
+    );
 }
 
 export function applyPaidNovel(novelId){

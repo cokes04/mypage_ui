@@ -3,7 +3,7 @@ import style from '../css/pages/FindPasswordPage.module.css'
 import { resetPassword } from '../apis/UserApi';
 import { useHistory } from 'react-router-dom';
 
-const ResetPasswordPage = ({resetKey}) => {
+const ResetPasswordPage = ({userId, resetKey}) => {
     const history = useHistory();
 
     const [password1, setPassword1] = useState('');
@@ -11,16 +11,20 @@ const ResetPasswordPage = ({resetKey}) => {
 
     const max_password_length = 30;
 
-    const submit = () => {
-        resetPassword(resetKey, password1)
-        .then(response => {
+    const submit = async () => {
+        try{
+            await resetPassword(userId, resetKey, password1)
             alert("비밀번호가 성공적으로 변경되었습니다.")
             history.push("/sign");
-        })
-        .catch( error => {
-            alert("비밀번호 변경에 실패했습니다. 잠시 후 다시 시도하여주세요.")
+            
+        } catch (error){
+            try{
+                alert(error.response.data.errors[0].message)
+            } catch(e){
+                alert("비밀번호 변경에 실패했습니다. 잠시 후 다시 시도하여주세요.")
+            }
             history.push("/");
-        })
+        } 
     }
 
     return(

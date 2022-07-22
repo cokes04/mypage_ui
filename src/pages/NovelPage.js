@@ -73,7 +73,7 @@ const NovelPage = ({novelId, authenticated, ...props}) => {
                             printReaderButton = {true}
                             isFavorite = {favorite}
                             />
-                { author.authorId == getUserId() && <Button><Link to={`/my_creation/write/${novelId}`}>글쓰기</Link></Button>}
+                { author.authorId === getUserId() && <Button><Link to={`/my_creation/write/${novelId}`}>글쓰기</Link></Button>}
                 { ( authenticated && !novel.free ) && <Ticket novelId = {novelId} />}
                 <EpisodeInfoList  novelId = {novelId} checkRead = {true} />
             </Container>

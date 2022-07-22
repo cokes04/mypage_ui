@@ -62,7 +62,8 @@ const EpisodeInfoList = ({novelId, ...props}) => {
         }
 
         getEpisode(novelId, pageInfo)
-        getsReadEpisodeOfNovel(novelId, userId)
+        if (userId)
+            getsReadEpisodeOfNovel(novelId, userId)
     }, [novelId, pageInfo])
 
     const togglePrintNotification = () => {

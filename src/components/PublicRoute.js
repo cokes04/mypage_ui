@@ -1,18 +1,20 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { isExistRefreshToken } from '../utils/AuthUtil'
 
-function PrivateRoute ({render, ...rest }) {
-    
+function PublicRoute ({render, ...rest }) {
+    const history = useHistory()
+
     const reject = () => {
-        alert("로그인이 필요한 페이지입니다.")
-        window.location.replace("/sign")
+        history.goBack()
     }
+    
     return (
         <Route
             {...rest}
             render = { props => 
-                isExistRefreshToken() ? 
+                !isExistRefreshToken() ? 
                         render(props)
                     :   <>{ reject()}</>         
             }
@@ -20,4 +22,4 @@ function PrivateRoute ({render, ...rest }) {
     )
 }
 
-export default PrivateRoute;
+export default PublicRoute;

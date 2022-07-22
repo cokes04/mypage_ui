@@ -6,11 +6,9 @@ import PageButtons from '../components/PageButtons'
 import { getAuthors } from '../apis/Api'
 import { SearchNovel } from '../apis/NovelApi'
 import {Container, Spinner} from 'react-bootstrap'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { ynToBool } from '../apis/mapper'
 
 const NovelListPage = ( {type, payment, genre, ageGroup, ...props} ) => {
-    const history = useHistory()
     const [loading, setLoading] = useState(true)
 
     const [novelInfo, setNovelInfo] = useState({    
@@ -31,15 +29,12 @@ const NovelListPage = ( {type, payment, genre, ageGroup, ...props} ) => {
     const [totalPage, setTotalPage] = useState(0)
 
     useEffect( () => {
-        let newNovelInfo = novelInfo;
-        if(payment !== novelInfo.payment)
-            newNovelInfo = {...newNovelInfo, payment : payment}
-        
-        if(type !== novelInfo.type)
-            newNovelInfo = {...newNovelInfo, type : type}
-
-        if(genre !== novelInfo.genre)
-            newNovelInfo = {...newNovelInfo, genre : genre}
+        let newNovelInfo = {    
+            type : type,
+            payment : payment,
+            genre : genre,
+            ageGroup : ageGroup,
+    }
 
         setLoading(true)
         setNovelInfo(newNovelInfo)

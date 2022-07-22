@@ -13,7 +13,7 @@ const EmailJoinPage = () => {
     const [passwordMessage, setPasswordMessage] = useState('')
 
     const emailMessage1 = "이메일 형식에 맞춰서 입력해주세요."
-    const passwordRole = "대문자, 소문자, 숫자, 특수문자(@$!%*#?&) 각 1개 이상씩 10 ~ 20자"
+    const passwordRole = "대문자, 소문자, 숫자, 특수문자(@$!%*#?&) 각 1자 이상씩 10 ~ 20자"
     const passwordMessage1 = "규칙에 맞는 비밀번호를 입력해주세요."
     const passwordMessage2 = "비밀번호가 일치하지 않습니다."
 
@@ -26,7 +26,7 @@ const EmailJoinPage = () => {
             const user = setUser()
             join(user)
             .then(response => {
-                alert("회원가입을 축하드립니다.")
+                alert("회원가입을 축하드립니다.\n 본인 확인 이메일이 발송되었습니다.")
                 history.push("/sign")
                 
             }).catch(error => {

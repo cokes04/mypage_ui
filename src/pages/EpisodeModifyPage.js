@@ -46,7 +46,7 @@ const EpisodeModifyPage = ({novelId, episodeId}) => {
         const request = async (episodeId) => {
             try{
                 let response = await getEpisode(episodeId)
-                if (response.data.authorId != getUserId()){
+                if (response.data.authorId !== getUserId()){
                     alert("접근할 수 없습니다.")
                     history.push("/")
                 } else{

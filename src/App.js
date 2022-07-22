@@ -32,6 +32,10 @@ import PayApplyPage from './pages/PayApplyPage';
 import SettlementPage from './pages/SettlementPage';
 import TicketChargeResultPage from './pages/TicketChargeResultPage';
 import {ACCESS_TOKEN_NAME} from "./utils/AuthUtil";
+import VerifyEmailHandler from './components/VerifyEmailHandler';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
+import PublicRoute from './components/PublicRoute';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function App() {
        const [authenticated, setAuthenticated] = useState(false);
@@ -81,14 +85,6 @@ function App() {
                                           <MainMenu />
 
                                           <div className='container'>
-                                                 <Route path='/notice'
-                                                        component={NoticePage}
-                                                        exact />
-
-                                                 <Route path='/best'
-                                                        component={MainPage}
-                                                        exact />
-
                                                  <Route path={[
                                                         '/paynovel/:type/:genre',
                                                         '/paynovel/:type',
@@ -96,8 +92,11 @@ function App() {
                                                         '/freenovel/:type/:genre',
                                                         '/freenovel/:type',
                                                         '/freenovel',
+                                                        '/allnovel/:type/:genre',
+                                                        '/allnovel/:type',
+                                                        '/allnovel'
                                                  ]}
-                                                        render={(props) => <NovelListPage payment={props.match.url.split('/')[1] === 'paynovel' ? 'pay' : 'free'}
+                                                        render={(props) => <NovelListPage payment={props.match.url.split('/')[1] === 'paynovel' ? 'pay' :(props.match.url.split('/')[1] === 'freenovel' ? 'free' : "all") }
                                                                type={props.match.params.type || 'all'}
                                                                genre={props.match.params.genre || 'all'}
                                                                ageGroup={'all'}
@@ -114,14 +113,12 @@ function App() {
                                                  <Route path='/novel/:novel_id'
                                                         render={(props) => <NovelPage novelId={props.match.params.novel_id} authenticated={authenticated} {...props} />} />
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/mynovel'
+                                                 <PrivateRoute path='/mynovel'
                                                         render={(props) => <MyNovelPage  {...props} />}
                                                  />
 
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/my_info'
+                                                 <PrivateRoute path='/my_info'
                                                         render={(props) => <MyInfoPage unAuthenticate = {unAuthenticate} {...props} />}
                                                         exact
                                                  />
@@ -129,23 +126,19 @@ function App() {
                                                  <Route path='/author/:author_id'
                                                         render={(props) => <AuthorPage id={props.match.params.author_id} {...props} />} />
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/ticket/charge'
+                                                 <PrivateRoute path='/ticket/charge'
                                                         render={(props) => <TicketChargePage novelId={new URLSearchParams(props.location.search).get('novelId')}
                                                                                              episodeId={new URLSearchParams(props.location.search).get('episodeId')}
                                                                                              authenticated={authenticated} {...props} />}
                                                         exact />
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/ticket/charge/result'
+                                                 <PrivateRoute path='/ticket/charge/result'
                                                         render={(props) => <TicketChargeResultPage />}
                                                         exact />
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/cash/charge'
+                                                 <PrivateRoute path='/cash/charge'
                                                         render={(props) => <CashChargePage {...props} />}
                                                         exact />
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/usage-history'
+                                                 <PrivateRoute path='/usage-history'
                                                         render={(props) => <UsageHistoryPage {...props} />}
                                                         exact />
 
@@ -162,40 +155,53 @@ function App() {
                                                  <Route path='/my_creation/pay_apply/:novel_id'
                                                         render={(props) => <PayApplyPage novelId={props.match.params.novel_id} {...props} />}
                                                         exact />                                         
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/my_creation/register'
+                                                 <PrivateRoute path='/my_creation/register'
                                                         component={NovelRegisterPage}
                                                         exact />
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/my_creation/settlement'
+                                                 <PrivateRoute path='/my_creation/settlement'
                                                         component={SettlementPage}
                                                         exact />
 
-                                                 <PrivateRoute authenticated={authenticated}
-                                                        path='/my_creation'
+                                                 <PrivateRoute path='/my_creation'
                                                         render={(props) => <MyCreationPage {...props} />} 
                                                         exact />
 
 
-                                                 <Route path='/sign'
+                                                 <PublicRoute path='/sign'
                                                         render={(props) => <SignPage authenticate={authenticate} {...props} />}
                                                         exact />
 
-                                                 <Route path='/signup/emailForm'
+                                                 <PublicRoute path='/signup/emailForm'
                                                         component={EmailJoinPage}
                                                         exact />
+                                                 <PrivateRoute path='/change/password' 
+                                                        render={(props) => <ChangePasswordPage {...props} />}
+                                                        exact />
 
-                                                 <Route path='/find/password' 
+                                                 <PublicRoute path='/find/password' 
                                                         render={(props) => <FindPasswordPage {...props} />}
                                                         exact />
 
                                                  <Route path='/reset/password' 
-                                                        render={(props) => <ResetPasswordPage resetKey={new URLSearchParams(props.location.search).get('key')}  {...props} />}
+                                                        render={(props) => <ResetPasswordPage 
+                                                               resetKey={new URLSearchParams(props.location.search).get('key')}
+                                                               userId={new URLSearchParams(props.location.search).get('userId')}
+                                                               {...props} />}
+                                                        exact />
+
+                                                 <Route path='/verify/email' 
+                                                        render={(props) => <VerifyEmailHandler
+                                                               verifyKey={new URLSearchParams(props.location.search).get('key')}
+                                                               userId={new URLSearchParams(props.location.search).get('userId')}
+                                                               {...props} />}
                                                         exact />
 
                                                  <Route path='/'
-                                                        component={MainPage} exact />
+                                                        component = { (props) =>  <Redirect to={{
+                                                               pathname: '/allnovel',
+                                                           }}/> }
+                                                        exact />
 
                                                  <Route component={MainPage} />
                                           </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getUser, changeReaderInfo, withdraw, verifyEmailRequest, verifyAdult } from '../apis/UserApi';
 import { getUserId } from '../utils/AuthUtil';
-import { Button, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
+import { Button, Col, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
 import { logout } from '../apis/AuthApi';
 import { changeAuthorInfo } from '../apis/UserApi';
 
@@ -24,6 +24,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
     const [aboutAuthor, setAboutAuthor] = useState("")
 
     const [verificationStatus, setVerificationStatus] = useState(false)
+    const [authProvider, setAuthProvider] = useState("")
 
     const max_name_length = 20
 
@@ -48,6 +49,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
                 setAboutAuthor(authorInfo.aboutAuthor)
 
                 setVerificationStatus(response.data.verify === "y" ? true : false)
+                setAuthProvider(response.data.authProvider)
                 setLoading(false)
             })
             .catch ( (error) => {
@@ -84,11 +86,15 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             })
     }
 
-    const verifyEmail = () => {
+    const verifyEmail = (freepass) => {
         const request = async (userId) => {
             try{
-                const response = await verifyEmailRequest(userId);
-                alert("이메일 인증이 완료되었습니다\n잠시 후 새로고침 해주세요")
+                const response = await verifyEmailRequest(userId, freepass)
+                if (freepass){
+                    alert("본인 확인이 완료되었습니다.")
+                    window.location.replace("/my_info")
+                }else
+                    alert("본인 확인 이메일이 발송되었습니다.\n 이메일 확인바랍니다.")
 
             }catch (error){
                 try{
@@ -96,6 +102,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
                 } catch(e){
                     alert("잠시 후 다시 시도해주세요!")
                 }
+                window.location.replace("/my_info")
             }
         }
 
@@ -108,6 +115,7 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
             try{
                 const response = await verifyAdult(userId);
                 alert("성인 인증이 완료되었습니다!")
+                window.location.replace("/my_info")
 
             }catch (error){
                 try{
@@ -171,6 +179,9 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
         
     }
 
+    const changePassword = () => {
+        history.push("/change/password")
+    }
     return (
         loading ? <Spinner animation = "border"/> :
         <Container  className='p-3 justify-content-center my-3' 
@@ -184,13 +195,16 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
                 <InputGroup.Text>이메일</InputGroup.Text>
                 <FormControl disabled value={email}/>
                 {verificationStatus ? <InputGroup.Text>인증 완료</InputGroup.Text> : 
-                    <Button onClick={verifyEmail}>이메일 인증</Button>
+                    <>
+                    <Button onClick={() => verifyEmail(true)}>이메일 바로 인증(TEST)</Button>
+                    <Button onClick={() => verifyEmail(false)}>이메일 인증</Button>
+                    </>
                 }
             </InputGroup>
             <InputGroup>
                 <InputGroup.Text>성인</InputGroup.Text>
                 <FormControl disabled value={adult ? "인증 완료" : "미인증"}/>
-                {adult ? <></> : <Button onClick={certifyAdult}>성인 인증</Button>}
+                {adult ? <></> : <Button onClick={certifyAdult}>성인 바로 인증(TEST)</Button>}
             </InputGroup>
 
             <Row className='mt-3 justify-content-center'> 프로필 </Row>
@@ -255,7 +269,14 @@ const MyInfoPage = ({unAuthenticate, ...props}) => {
 
 
             <Row md="auto" className='m-5 justify-content-center'>
-                <Button onClick={withdrawal}>회원 탈퇴</Button>
+                <Col>
+                    <Button onClick={withdrawal}>회원 탈퇴</Button>
+                </Col>
+                {
+                authProvider === "local" ? <Col>
+                    <Button onClick={changePassword}>비밀번호 변경</Button>
+                </Col> : <></>}
+                               
             </Row>            
             
         </Container>

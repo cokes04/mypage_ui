@@ -22,19 +22,20 @@ const EpisodePage = ({episodeId}) => {
     const [showReplys, setShowReplys] = useState(false)
 
     useEffect( () =>{
-    const abc = async () => {
+    const request = async () => {
             try{
                 let response = await getEpisode(episodeId)
                 setEpisode(response.data)
             
             }catch (error){
                 try{
-                    if(error.response.data.errors.filter( e => e.code === "010002").length == 1 ){
+                    if(error.response.data.errors.filter( e => e.code === "010002").length === 1){
                         setNeedPurchase(true)
 
-                    } else if(error.response.data.errors.filter( e => e.code === "010003").length == 1 ){
-                        alert(error.response.data.errors.filter( e => e.code === "010003"))
+                    }else if(error.response.data.errors.filter( e => e.code === "010003").length === 1){
+                        alert(error.response.data.errors.filter( e => e.code === "010003")[0]["message"])
                         history.push("/my_info")
+
                     }else{
                         alert(error.response.data.errors[0].message)
                         history.goBack()
@@ -48,8 +49,8 @@ const EpisodePage = ({episodeId}) => {
                 setEpisodeLoading(false)
             }
         }
-        abc()
-    },[episodeId])
+        request()
+    }, [episodeId])
 
     useEffect(() => {
         const userId = getUserId()
@@ -57,11 +58,17 @@ const EpisodePage = ({episodeId}) => {
             try{
                 let isRecommededEpisodeResponse = await isRecommendedEpisode([episodeId], userId)
                 setRecommendation( ynToBool(isRecommededEpisodeResponse.data[episodeId]) )
-            }catch{}
-        }
+            }catch{
 
-        request(userId)
-        setRecommendationLoading(false)
+            }finally{
+                setRecommendationLoading(false)
+            }
+        }
+        
+        if(userId)
+            request(userId)
+        else
+            setRecommendationLoading(false)
     }, [episodeId])
     
     const toggleRecommendation = async () => {

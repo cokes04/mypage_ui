@@ -57,7 +57,7 @@ const NovelInfo = ({novel, author, printReaderButton, isFavorite, ...props }) =>
 
                 <Col md={2}>
                     <Link to={'/novel/' + novel.novelId} >
-                        <Image fluid src={TmpImg} style={{height:"160px", weigth:"50px"}}/>
+                        <Image fluid src={novel.thumbnailUrl ? novel.thumbnailUrl : TmpImg} style={{height:"160px", weigth:"50px"}}/>
                     </Link>
                 </Col>
 

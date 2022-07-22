@@ -63,12 +63,7 @@ const MyCreationPage = ({...props}) => {
                         작품 등록
                     </Link>  
                 </Col>
-                <Col>
-                    <Link to = '/my_creation/settlement'  style={{fontSize : "50px"}}>
-                        정산관리
-                    </Link> 
-                </Col>
-                 
+                
             </Row>
 
             {totalCount === 0 ? <p>등록된 작품이 없습니다.</p> : novelInfos()}
